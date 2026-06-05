@@ -1,0 +1,81 @@
+.form-field,
+.prototype-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.form-field__label,
+.prototype-form label > span {
+  color: #a5afbf;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.01em;
+}
+
+.form-field__input,
+.form-field__textarea,
+.form-field__select,
+.prototype-form input,
+.prototype-form textarea,
+.settings-page__select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: #edf2f8;
+  background: linear-gradient(180deg, #101722, #0c121a);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+
+  &::placeholder {
+    color: #596577;
+  }
+
+  &:hover {
+    border-color: rgba(148, 163, 184, 0.28);
+    background: #111a26;
+  }
+
+  &:focus,
+  &:focus-visible {
+    border-color: rgba(79, 124, 255, 0.68);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.form-field__input,
+.form-field__select,
+.prototype-form input,
+.settings-page__select {
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.form-field__textarea,
+.prototype-form textarea {
+  min-height: 112px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.form-field__select,
+.settings-page__select {
+  appearance: none;
+  padding-right: 34px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #8f9bad 50%),
+    linear-gradient(135deg, #8f9bad 50%, transparent 50%);
+  background-position:
+    calc(100% - 17px) 17px,
+    calc(100% - 12px) 17px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.form-field__hint {
+  color: #6f7a8c;
+  font-size: 12px;
+}

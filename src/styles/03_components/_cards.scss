@@ -11,11 +11,16 @@
   display: block;
   min-height: 154px;
   padding: 20px 22px 18px;
-  background: #12161c;
+  border-color: rgba(148, 163, 184, 0.14);
+  background:
+    radial-gradient(circle at 90% 0%, rgba(79, 124, 255, 0.06), transparent 34%),
+    #12161c;
+  box-shadow: var(--shadow-soft);
   transition:
-    border-color 160ms ease,
-    transform 160ms ease,
-    background 160ms ease;
+    border-color var(--transition-ui),
+    transform var(--transition-ui),
+    box-shadow var(--transition-ui),
+    background var(--transition-ui);
 
   > span {
     display: block;
@@ -67,9 +72,16 @@
   cursor: pointer;
 
   &:hover {
-    border-color: rgba(79, 124, 255, 0.38);
+    border-color: rgba(79, 124, 255, 0.42);
     background: #151b24;
-    transform: translateY(-1px);
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 0;
+    border-color: rgba(79, 124, 255, 0.66);
+    box-shadow: var(--focus-ring), var(--shadow-lift);
   }
 }
 
@@ -104,49 +116,24 @@
   background: var(--purple);
 }
 
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  min-height: 24px;
-  border-radius: 7px;
-  padding: 4px 8px;
-  color: #9aa4b2;
-  background: #202631;
-  font-size: 11px;
-  font-weight: 850;
-  white-space: nowrap;
-}
-
-.status-pill--active {
-  color: #62e597;
-  background: rgba(34, 197, 94, 0.16);
-}
-
-.status-pill--blue {
-  color: #86a4ff;
-  background: rgba(79, 124, 255, 0.18);
-}
-
-.status-pill--purple {
-  color: #c49cff;
-  background: rgba(155, 92, 255, 0.18);
-}
-
-.status-pill--warning {
-  color: #f7b84d;
-  background: rgba(245, 158, 11, 0.16);
-}
-
-.status-pill--risk {
-  color: #ff8b84;
-  background: rgba(239, 68, 68, 0.16);
-}
-
 .info-card {
   min-height: 190px;
   padding: 24px;
-  background: #12161c;
+  border-color: rgba(148, 163, 184, 0.14);
+  background:
+    radial-gradient(circle at 88% 0%, rgba(79, 124, 255, 0.05), transparent 34%),
+    #12161c;
+  box-shadow: var(--shadow-soft);
+  transition:
+    border-color var(--transition-ui),
+    transform var(--transition-ui),
+    box-shadow var(--transition-ui);
+
+  &:hover {
+    border-color: rgba(148, 163, 184, 0.22);
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-1px);
+  }
 
   span {
     display: grid;

@@ -13,6 +13,8 @@ const escalationOptions = [
   'Einkauf entscheidet',
 ]
 
+const autonomyLevels = ['Niedrig', 'Mittel', 'Hoch']
+
 function SettingsSection({ title, children, modifier = '' }) {
   return (
     <section className="settings-page__section">
@@ -26,17 +28,84 @@ function SettingCard({ setting, children }) {
   return (
     <article className="settings-page__card">
       <div className="settings-page__row">
-        <span>{setting.label}</span>
+        <div>
+          <span>{setting.label}</span>
+          {setting.description && <p>{setting.description}</p>}
+        </div>
         {children}
       </div>
-      {setting.description && <p>{setting.description}</p>}
     </article>
+  )
+}
+
+function NumericControl({ max, min = 0, onChange, step = 1, suffix, value }) {
+  const updateValue = (nextValue) => {
+    onChange(Math.min(max, Math.max(min, nextValue)))
+  }
+
+  return (
+    <div className="stepper-control">
+      <div className="stepper-control__main">
+        <button className="btn btn--ghost btn--small" type="button" onClick={() => updateValue(value - step)}>
+          −
+        </button>
+        <strong>{value.toLocaleString('de-DE')} {suffix}</strong>
+        <button className="btn btn--ghost btn--small" type="button" onClick={() => updateValue(value + step)}>
+          +
+        </button>
+      </div>
+      <input
+        max={max}
+        min={min}
+        type="range"
+        value={value}
+        onChange={(event) => updateValue(Number(event.target.value))}
+      />
+      <div className="stepper-control__limits">
+        <span>{min} {suffix}</span>
+        <span>{max.toLocaleString('de-DE')} {suffix}</span>
+      </div>
+    </div>
+  )
+}
+
+function SwitchControl({ checked, label, onChange }) {
+  return (
+    <button
+      className={`switch-control ${checked ? 'switch-control--on' : ''}`}
+      type="button"
+      onClick={() => onChange(!checked)}
+    >
+      <span className="switch-control__track">
+        <i />
+      </span>
+      <span>{label}</span>
+      <strong>{checked ? 'Aktiv' : 'Inaktiv'}</strong>
+    </button>
+  )
+}
+
+function SegmentedControl({ onChange, value }) {
+  return (
+    <div className="segmented-control" role="group" aria-label="Autonomielevel">
+      {autonomyLevels.map((level) => (
+        <button
+          className={level === value ? 'segmented-control__item segmented-control__item--active' : 'segmented-control__item'}
+          key={level}
+          type="button"
+          onClick={() => onChange(level)}
+        >
+          {level}
+        </button>
+      ))}
+    </div>
   )
 }
 
 function RegelnGovernance() {
   const [priceRange, setPriceRange] = useState(10)
   const [orderLimit, setOrderLimit] = useState(5000)
+  const [negotiationDuration, setNegotiationDuration] = useState(48)
   const [newSupplierApproval, setNewSupplierApproval] = useState(true)
   const [escalations, setEscalations] = useState(
     escalationRules.map((rule) => rule.value),
@@ -70,41 +139,34 @@ function RegelnGovernance() {
       </header>
 
       <SettingsSection title="Autonomiegrenzen">
-        <SettingCard setting={autonomySettings[0]}>
-          <label className="settings-page__field">
-            <input
-              min="0"
-              max="25"
-              type="number"
-              value={priceRange}
-              onChange={(event) => setPriceRange(event.target.value)}
-            />
-            <em>±{priceRange || 0} %</em>
-          </label>
+        <SettingCard
+          setting={{
+            ...autonomySettings[0],
+            description: 'Legt fest, in welchem Rahmen der Negotiation Agent autonom verhandeln darf.',
+          }}
+        >
+          <NumericControl max={25} onChange={setPriceRange} suffix="%" value={priceRange} />
         </SettingCard>
 
         <SettingCard setting={autonomySettings[1]}>
-          <label className="settings-page__field">
-            <input
-              min="0"
-              step="500"
-              type="number"
-              value={orderLimit}
-              onChange={(event) => setOrderLimit(event.target.value)}
-            />
-            <em>{Number(orderLimit || 0).toLocaleString('de-DE')} €</em>
-          </label>
+          <NumericControl max={25000} onChange={setOrderLimit} step={500} suffix="€" value={orderLimit} />
+        </SettingCard>
+
+        <SettingCard
+          setting={{
+            label: 'Maximale Verhandlungsdauer',
+            description: 'Begrenzt automatische Verhandlungen, bevor eine Eskalation erfolgt.',
+          }}
+        >
+          <NumericControl max={96} onChange={setNegotiationDuration} step={4} suffix="h" value={negotiationDuration} />
         </SettingCard>
 
         <SettingCard setting={autonomySettings[2]}>
-          <label className="settings-page__toggle">
-            <input
-              checked={newSupplierApproval}
-              type="checkbox"
-              onChange={(event) => setNewSupplierApproval(event.target.checked)}
-            />
-            <span>{newSupplierApproval ? 'Aktiv' : 'Inaktiv'}</span>
-          </label>
+          <SwitchControl
+            checked={newSupplierApproval}
+            label="Neue Lieferanten"
+            onChange={setNewSupplierApproval}
+          />
         </SettingCard>
       </SettingsSection>
 
@@ -112,7 +174,7 @@ function RegelnGovernance() {
         {escalationRules.map((setting, index) => (
           <SettingCard key={setting.label} setting={setting}>
             <select
-              className="settings-page__select"
+              className="form-field__select settings-page__select"
               value={escalations[index]}
               onChange={(event) => {
                 const nextEscalations = [...escalations]
@@ -131,19 +193,16 @@ function RegelnGovernance() {
       <SettingsSection title="Compliance & Nachvollziehbarkeit">
         {complianceSettings.map((setting) => (
           <SettingCard key={setting.label} setting={setting}>
-            <label className="settings-page__toggle">
-              <input
-                checked={compliance[setting.label]}
-                type="checkbox"
-                onChange={(event) =>
-                  setCompliance({
-                    ...compliance,
-                    [setting.label]: event.target.checked,
-                  })
-                }
-              />
-              <span>{compliance[setting.label] ? 'Aktiv' : 'Inaktiv'}</span>
-            </label>
+            <SwitchControl
+              checked={compliance[setting.label]}
+              label={setting.label}
+              onChange={(checked) =>
+                setCompliance({
+                  ...compliance,
+                  [setting.label]: checked,
+                })
+              }
+            />
           </SettingCard>
         ))}
       </SettingsSection>
@@ -161,20 +220,15 @@ function RegelnGovernance() {
             <p>{agent.description}</p>
             <footer>
               <span>Autonomielevel</span>
-              <select
-                className="settings-page__select"
+              <SegmentedControl
                 value={agentAutonomy[agent.name]}
-                onChange={(event) =>
+                onChange={(level) =>
                   setAgentAutonomy({
                     ...agentAutonomy,
-                    [agent.name]: event.target.value,
+                    [agent.name]: level,
                   })
                 }
-              >
-                <option>Niedrig</option>
-                <option>Mittel</option>
-                <option>Hoch</option>
-              </select>
+              />
             </footer>
           </article>
         ))}

@@ -31,8 +31,8 @@ function Dashboard() {
           </div>
         </div>
         <div className="hero-panel__actions">
-          <Link to="/rfqs">+ Neue RFQ erstellen</Link>
-          <Link to="/freigaben">
+          <Link className="btn btn--primary" to="/rfqs">+ Neue RFQ erstellen</Link>
+          <Link className="btn btn--secondary" to="/freigaben">
             Freigaben prüfen <strong>6</strong>
           </Link>
         </div>
@@ -78,9 +78,9 @@ function Dashboard() {
                     <small>{decision.meta}</small>
                   </div>
                   <div className="decision-card__actions">
-                    <Link to="/freigaben">Prüfen</Link>
-                    <Link to="/freigaben">Freigeben</Link>
-                    <Link to="/freigaben">Ablehnen</Link>
+                    <Link className="btn btn--primary btn--small" to="/freigaben">Prüfen</Link>
+                    <Link className="btn btn--success btn--small" to="/freigaben">Freigeben</Link>
+                    <Link className="btn btn--ghost btn--small" to="/freigaben">Ablehnen</Link>
                   </div>
                 </article>
               ))}

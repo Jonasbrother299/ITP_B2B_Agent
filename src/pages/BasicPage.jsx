@@ -7,7 +7,7 @@ function TableCell({ value }) {
     return (
       <div className="inline-actions">
         {value.map((action) => (
-          <Link className="table-action" key={action.label} to={action.path}>
+          <Link className="btn btn--secondary btn--small table-action" key={action.label} to={action.path}>
             {action.label}
           </Link>
         ))}
@@ -17,7 +17,7 @@ function TableCell({ value }) {
 
   if (value?.path) {
     return (
-      <Link className="table-action" to={value.path}>
+      <Link className="btn btn--secondary btn--small table-action" to={value.path}>
         {value.label}
       </Link>
     )
@@ -72,18 +72,18 @@ function RfqForm({ form }) {
       </div>
       <form className="prototype-form">
         {form.fields.map((field) => (
-          <label key={field}>
-            <span>{field}</span>
+          <label className="form-field" key={field}>
+            <span className="form-field__label">{field}</span>
             {field === 'Anfragetext' ? (
-              <textarea placeholder={`${field} eingeben`} rows="4" />
+              <textarea className="form-field__textarea" placeholder={`${field} eingeben`} rows="4" />
             ) : (
-              <input placeholder={`${field} eingeben`} type="text" />
+              <input className="form-field__input" placeholder={`${field} eingeben`} type="text" />
             )}
           </label>
         ))}
         <div className="prototype-form__actions">
           {form.actions.map((action, index) => (
-            <button className={index === 1 ? 'button-link button-link--primary' : 'button-link'} key={action} type="button">
+            <button className={index === 1 ? 'btn btn--primary' : 'btn btn--secondary'} key={action} type="button">
               {action}
             </button>
           ))}
@@ -143,7 +143,7 @@ function OfferComparison({ page }) {
         <p>{page.recommendation}</p>
         <div>
           {page.actions.map((action) => (
-            <Link className="button-link button-link--primary" key={action.label} to={action.path}>
+            <Link className="btn btn--primary" key={action.label} to={action.path}>
               {action.label}
             </Link>
           ))}
@@ -180,7 +180,7 @@ function TimelineSection({ page }) {
         </div>
         <div className="section-actions">
           {page.actions.map((action) => (
-            <Link className="button-link button-link--primary" key={action.label} to={action.path}>
+            <Link className="btn btn--primary" key={action.label} to={action.path}>
               {action.label}
             </Link>
           ))}
@@ -208,9 +208,9 @@ function ApprovalSection({ page }) {
               <div><dt>Datenquelle</dt><dd>{approval.source}</dd></div>
             </dl>
             <div className="approval-card__actions">
-              <button type="button">Freigeben</button>
-              <button type="button">Ablehnen</button>
-              <button type="button">Details prüfen</button>
+              <button className="btn btn--success btn--small" type="button">Freigeben</button>
+              <button className="btn btn--danger btn--small" type="button">Ablehnen</button>
+              <button className="btn btn--ghost btn--small" type="button">Details prüfen</button>
             </div>
           </article>
         ))}
@@ -300,7 +300,7 @@ function BasicPage({ page }) {
             <h2>{page.reportCard.title}</h2>
             <p>{page.reportCard.text}</p>
           </div>
-          <button className="button-link button-link--primary" type="button">
+          <button className="btn btn--primary" type="button">
             {page.reportCard.action}
           </button>
         </section>

@@ -1,5 +1,16 @@
 function StatusPill({ children, tone = 'neutral' }) {
-  return <span className={`status-pill status-pill--${tone}`}>{children}</span>
+  const badgeTone =
+    {
+      active: 'success',
+      risk: 'danger',
+      blue: 'info',
+    }[tone] ?? tone
+
+  return (
+    <span className={`badge badge--${badgeTone} status-pill status-pill--${tone}`}>
+      {children}
+    </span>
+  )
 }
 
 export default StatusPill

@@ -7,7 +7,10 @@
   height: 62px;
   border-bottom: 1px solid var(--line);
   padding: 0 32px;
-  background: #0d1015;
+  background:
+    linear-gradient(180deg, rgba(17, 21, 28, 0.98), rgba(12, 16, 21, 0.98)),
+    #0d1015;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .topbar__breadcrumb {
@@ -37,19 +40,27 @@
     width: 100%;
     height: 38px;
     border: 1px solid var(--line);
-    border-radius: 9px;
+    border-radius: var(--radius-md);
     padding: 0 18px 0 42px;
     color: var(--ink);
-    background: #151922;
+    background: linear-gradient(180deg, #171d27, #121821);
     outline: none;
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast),
+      background var(--transition-fast);
 
     &::placeholder {
       color: #687284;
     }
 
+    &:hover {
+      border-color: rgba(148, 163, 184, 0.28);
+    }
+
     &:focus {
       border-color: rgba(79, 124, 255, 0.55);
-      box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.14);
+      box-shadow: var(--focus-ring);
     }
   }
 
@@ -90,10 +101,25 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 0;
-  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 4px 6px 4px 10px;
   color: inherit;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.015);
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:hover {
+    border-color: rgba(148, 163, 184, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: var(--focus-ring);
+  }
 
   &:hover .topbar__avatar {
     box-shadow: 0 0 0 2px rgba(79, 124, 255, 0.28);
@@ -105,7 +131,7 @@
   place-items: center;
   width: 34px;
   height: 34px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   color: #c9d2e3;
   background: #252c38;
   font-size: 13px;

@@ -88,21 +88,6 @@
     font-weight: 850;
   }
 
-  input,
-  textarea {
-    width: 100%;
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    padding: 12px;
-    color: #e6ebf2;
-    background: #0d121a;
-    outline: none;
-
-    &:focus {
-      border-color: rgba(79, 124, 255, 0.55);
-      box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.12);
-    }
-  }
 }
 
 .prototype-form__actions,
@@ -183,6 +168,29 @@
     font-weight: 800;
     text-align: right;
   }
+}
+
+.approval-card {
+  transition:
+    opacity var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.approval-card--resolved {
+  border-color: rgba(148, 163, 184, 0.1);
+  background: rgba(18, 22, 28, 0.72);
+
+  .approval-card__actions .btn:not(:last-child) {
+    opacity: 0.48;
+  }
+}
+
+.approval-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .comparison-bars {
@@ -301,23 +309,6 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 18px;
-
-  button {
-    min-height: 34px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 0 12px;
-    color: #cbd5e1;
-    background: #141821;
-    font-size: 12px;
-    font-weight: 850;
-
-    &:first-child {
-      border-color: rgba(34, 197, 94, 0.35);
-      color: #bbf7d0;
-      background: rgba(34, 197, 94, 0.14);
-    }
-  }
 }
 
 .info-panel {

@@ -21,11 +21,11 @@ function Topbar() {
       </label>
 
       <div className="topbar__profile" aria-label="Signed in user">
-        <button className="topbar__icon-button" type="button" aria-label="Benachrichtigungen">
+        <button className="btn btn--ghost topbar__icon-button" type="button" aria-label="Benachrichtigungen">
           ○
         </button>
         <button
-          className="topbar__profile-trigger"
+          className="btn btn--ghost topbar__profile-trigger"
           type="button"
           onClick={() => setIsProfileOpen(true)}
         >
@@ -47,7 +47,7 @@ function Topbar() {
           />
           <aside className="profile-drawer__card" aria-label="Profilinformationen">
             <button
-              className="profile-drawer__close"
+              className="btn btn--ghost profile-drawer__close"
               type="button"
               aria-label="Profil schließen"
               onClick={() => setIsProfileOpen(false)}
