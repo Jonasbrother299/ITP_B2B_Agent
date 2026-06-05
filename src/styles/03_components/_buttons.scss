@@ -1,0 +1,114 @@
+.topbar__icon-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #8792a3;
+  background: #141821;
+}
+
+.hero-panel__actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 210px;
+  height: 48px;
+  border: 0;
+  border-radius: 9px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #5a6dff, #7467ff);
+  font-size: 14px;
+  font-weight: 850;
+  box-shadow: 0 14px 28px rgba(89, 103, 255, 0.22);
+
+  &:last-child {
+    color: #f6a51b;
+    background: rgba(245, 158, 11, 0.18);
+    box-shadow: none;
+  }
+
+  strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    border-radius: 999px;
+    background: rgba(245, 158, 11, 0.2);
+    font-size: 11px;
+  }
+}
+
+.decision-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 0 16px;
+    color: #8390a4;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 800;
+
+    &:first-child,
+    &:nth-child(2) {
+      border-color: rgba(79, 124, 255, 0.3);
+      color: #c9d6ff;
+      background: rgba(79, 124, 255, 0.22);
+    }
+  }
+}
+
+.table-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid rgba(79, 124, 255, 0.28);
+  border-radius: 7px;
+  padding: 0 10px;
+  color: #c9d6ff;
+  background: rgba(79, 124, 255, 0.14);
+  font-size: 12px;
+  font-weight: 850;
+
+  &:hover {
+    border-color: rgba(79, 124, 255, 0.5);
+    background: rgba(79, 124, 255, 0.22);
+  }
+}
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px;
+  color: #9aa4b2;
+  background: #141821;
+  font-size: 13px;
+  font-weight: 850;
+
+  &:hover {
+    border-color: rgba(79, 124, 255, 0.38);
+    color: #dbeafe;
+    background: #182032;
+  }
+}
+
+.button-link--primary {
+  border-color: rgba(79, 124, 255, 0.34);
+  color: #ffffff;
+  background: linear-gradient(135deg, #5368ff, #6b5cff);
+}

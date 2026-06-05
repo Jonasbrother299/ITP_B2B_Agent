@@ -1,0 +1,168 @@
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 22px;
+}
+
+.chart-card {
+  min-height: 240px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  background: #12161c;
+
+  h3 {
+    margin: 0 0 18px;
+    color: #eef2f8;
+    font-size: 15px;
+  }
+}
+
+.bar-chart {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  height: 150px;
+  border-bottom: 1px solid var(--line-strong);
+  padding: 0 4px;
+
+  span {
+    flex: 1;
+    min-height: 18px;
+    border-radius: 7px 7px 0 0;
+    background: linear-gradient(180deg, #6d7dff, #4f7cff);
+  }
+}
+
+.status-bars {
+  display: grid;
+  gap: 18px;
+}
+
+.status-bar {
+  display: grid;
+  gap: 8px;
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  span {
+    color: #9ca5b4;
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  strong {
+    color: #d8dde7;
+    font-size: 12px;
+  }
+
+  i {
+    height: 8px;
+    border-radius: 999px;
+    background: #202631;
+    overflow: hidden;
+  }
+
+  b {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--blue);
+  }
+}
+
+.tone-active {
+  background: var(--green) !important;
+}
+
+.tone-purple {
+  background: var(--purple) !important;
+}
+
+.tone-warning {
+  background: var(--amber) !important;
+}
+
+.tone-risk {
+  background: var(--red) !important;
+}
+
+.supplier-comparison {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 22px;
+}
+
+.supplier-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  background: #12161c;
+
+  > div:first-child {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  h3 {
+    margin: 0;
+    color: #eef2f8;
+    font-size: 16px;
+  }
+
+  dl {
+    display: grid;
+    gap: 12px;
+    margin: 22px 0;
+  }
+
+  dl div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  dt {
+    color: #7d8798;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  dd {
+    margin: 0;
+    color: #d8dde7;
+    font-size: 13px;
+    font-weight: 800;
+  }
+}
+
+.price-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: #202631;
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+  }
+}
+
+@media (max-width: 1320px) {
+  .chart-grid,
+  .supplier-comparison {
+    grid-template-columns: 1fr;
+  }
+}

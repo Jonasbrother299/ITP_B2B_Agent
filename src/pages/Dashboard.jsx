@@ -1,59 +1,86 @@
-import MetricCard from '../components/MetricCard.jsx'
+import { Link } from 'react-router-dom'
+import AgentCard from '../components/cards/AgentCard.jsx'
+import MetricCard from '../components/cards/MetricCard.jsx'
 import SectionHeader from '../components/SectionHeader.jsx'
-import Sidebar from '../components/Sidebar.jsx'
 import StatusPill from '../components/StatusPill.jsx'
-import Topbar from '../components/Topbar.jsx'
+import ProcurementTable from '../components/tables/ProcurementTable.jsx'
 import {
   agents,
+  dataSources,
   decisions,
   kpis,
-  navigationItems,
   procurementProcesses,
   recommendations,
 } from '../data/dashboardData.js'
 
 function Dashboard() {
   return (
-    <div className="dashboard-shell">
-      <Sidebar items={navigationItems} />
-
-      <main className="dashboard">
-        <Topbar />
-
-        <section className="hero-panel">
-          <div className="hero-panel__content">
-            <span>Procurement command center</span>
-            <h1>AI agents moving purchasing from request to compliant order.</h1>
-            <p>
-              Monitor autonomous sourcing, review exception decisions, and keep every
-              procurement workflow aligned with policy and supplier strategy.
-            </p>
+    <>
+      <section className="hero-panel">
+        <div className="hero-panel__content">
+          <span>KI-gestützte Automatisierung</span>
+          <h1>Intelligenter Einkaufsprozess</h1>
+          <p>
+            KI-Agenten überwachen Bedarfe, holen Angebote ein, vergleichen Lieferanten
+            und eskalieren kritische Entscheidungen an den Einkauf.
+          </p>
+          <div className="hero-panel__meta">
+            <span>4 Agenten aktiv</span>
+            <span>Sync vor 2 Min.</span>
+            <span>5 Datenquellen</span>
           </div>
-          <div className="hero-panel__summary" aria-label="Current automation summary">
-            <strong>72%</strong>
-            <span>Requests handled without manual touch</span>
-          </div>
-        </section>
+        </div>
+        <div className="hero-panel__actions">
+          <Link to="/rfqs">+ Neue RFQ erstellen</Link>
+          <Link to="/freigaben">
+            Freigaben prüfen <strong>6</strong>
+          </Link>
+        </div>
+      </section>
 
-        <section className="kpi-grid" aria-label="Procurement KPIs">
-          {kpis.map((metric) => (
-            <MetricCard metric={metric} key={metric.label} />
-          ))}
-        </section>
+      <section className="kpi-grid" aria-label="Procurement KPIs">
+        {kpis.map((metric) => (
+          <MetricCard metric={metric} key={metric.label} />
+        ))}
+      </section>
 
-        <div className="dashboard__columns">
-          <section className="panel">
-            <SectionHeader eyebrow="Active AI agents" title="Autonomous work in progress" />
+      <div className="dashboard__body">
+        <div className="dashboard__main">
+          <section className="panel panel--agents">
+            <SectionHeader
+              eyebrow="4 Agenten im Einsatz · Kontinuierliche Ausführung"
+              title="Aktive KI-Agenten"
+            />
             <div className="agent-list">
               {agents.map((agent) => (
-                <article className="agent-card" key={agent.name}>
-                  <div>
-                    <strong>{agent.name}</strong>
-                    <p>{agent.task}</p>
+                <AgentCard agent={agent} key={agent.name} />
+              ))}
+            </div>
+          </section>
+
+          <section className="panel panel--decisions">
+            <SectionHeader
+              eyebrow="4 Fälle warten auf Prüfung · nach Priorität sortiert"
+              title="Human-in-the-Loop: Entscheidung erforderlich"
+            />
+            <div className="decision-list">
+              {decisions.map((decision, index) => (
+                <article className="decision-card" key={decision.title}>
+                  <div className="decision-card__number">
+                    {String(index + 1).padStart(2, '0')}
                   </div>
-                  <div className="agent-card__meta">
-                    <StatusPill tone="active">{agent.status}</StatusPill>
-                    <span>{agent.confidence} confidence</span>
+                  <div className="decision-card__body">
+                    <div className="decision-card__heading">
+                      <strong>{decision.title}</strong>
+                      <StatusPill tone={decision.tone}>{decision.risk}</StatusPill>
+                    </div>
+                    <p>{decision.context}</p>
+                    <small>{decision.meta}</small>
+                  </div>
+                  <div className="decision-card__actions">
+                    <Link to="/freigaben">Prüfen</Link>
+                    <Link to="/freigaben">Freigeben</Link>
+                    <Link to="/freigaben">Ablehnen</Link>
                   </div>
                 </article>
               ))}
@@ -61,69 +88,49 @@ function Dashboard() {
           </section>
 
           <section className="panel">
-            <SectionHeader eyebrow="Human-in-the-loop" title="Decisions needing review" />
-            <div className="decision-list">
-              {decisions.map((decision) => (
-                <article className="decision-card" key={decision.title}>
-                  <div className="decision-card__heading">
-                    <strong>{decision.title}</strong>
-                    <StatusPill tone={decision.risk === 'High' ? 'risk' : 'warning'}>
-                      {decision.risk} risk
-                    </StatusPill>
-                  </div>
-                  <p>{decision.context}</p>
-                  <small>{decision.recommendation}</small>
-                </article>
-              ))}
-            </div>
+            <SectionHeader
+              eyebrow="24 aktive Vorgänge · 6 angezeigt"
+              title="Laufende Beschaffungsvorgänge"
+            />
+            <ProcurementTable processes={procurementProcesses} />
           </section>
         </div>
 
-        <section className="panel">
-          <SectionHeader eyebrow="Procurement process" title="Open purchasing workflows" />
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Request</th>
-                  <th>Owner</th>
-                  <th>Supplier</th>
-                  <th>Stage</th>
-                  <th>Spend</th>
-                  <th>ETA</th>
-                </tr>
-              </thead>
-              <tbody>
-                {procurementProcesses.map((process) => (
-                  <tr key={process.request}>
-                    <td>{process.request}</td>
-                    <td>{process.owner}</td>
-                    <td>{process.supplier}</td>
-                    <td>
-                      <StatusPill>{process.stage}</StatusPill>
-                    </td>
-                    <td>{process.spend}</td>
-                    <td>{process.eta}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+        <aside className="dashboard__aside">
+          <section className="panel recommendations">
+            <SectionHeader eyebrow="4 aktive Empfehlungen" title="System Intelligence" />
+            <div className="recommendations__grid">
+              {recommendations.map((recommendation) => (
+                <Link
+                  className={`recommendation-card recommendation-card--${recommendation.tone}`}
+                  key={recommendation.text}
+                  to={recommendation.path}
+                >
+                  <StatusPill tone={recommendation.tone}>{recommendation.label}</StatusPill>
+                  <p>{recommendation.text}</p>
+                  <div>
+                    <span>{recommendation.time}</span>
+                    <strong>Details ›</strong>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
 
-        <section className="panel recommendations">
-          <SectionHeader eyebrow="System intelligence" title="Recommended next actions" />
-          <div className="recommendations__grid">
-            {recommendations.map((recommendation, index) => (
-              <article className="recommendation-card" key={recommendation}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <p>{recommendation}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
+          <section className="panel data-sources">
+            <SectionHeader eyebrow="5 von 5 aktiv" title="Datenquellen" />
+            <div className="data-sources__list">
+              {dataSources.map((source) => (
+                <div className="data-source" key={source}>
+                  <span>{source}</span>
+                  <strong>Verbunden</strong>
+                </div>
+              ))}
+            </div>
+          </section>
+        </aside>
+      </div>
+    </>
   )
 }
 

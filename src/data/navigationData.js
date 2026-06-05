@@ -1,0 +1,12 @@
+export const navigationItems = [
+  { label: 'Dashboard', icon: 'D', path: '/dashboard' },
+  { label: 'Bedarfserkennung', icon: 'B', path: '/bedarfserkennung' },
+  { label: 'Lieferantensuche', icon: 'L', path: '/lieferantensuche' },
+  { label: 'RFQs', icon: 'R', path: '/rfqs' },
+  { label: 'Angebotsvergleich', icon: 'A', path: '/angebotsvergleich' },
+  { label: 'Verhandlungen', icon: 'V', path: '/verhandlungen' },
+  { label: 'Freigaben', icon: 'F', path: '/freigaben', badge: '6' },
+  { label: 'Bestellungen', icon: 'O', path: '/bestellungen' },
+  { label: 'Reporting', icon: 'P', path: '/reporting' },
+  { label: 'Regeln & Governance', icon: 'G', path: '/regeln-governance' },
+]

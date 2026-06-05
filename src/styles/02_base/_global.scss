@@ -1,0 +1,52 @@
+:root {
+  color: var(--ink);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-width: 1180px;
+  background: var(--bg);
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea,
+select,
+option,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.dashboard-shell {
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.dashboard {
+  min-width: 0;
+  padding-bottom: 32px;
+}
+
+.panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1320px) {
+  body {
+    min-width: 1024px;
+  }
+
+  .dashboard-shell {
+    grid-template-columns: 238px minmax(0, 1fr);
+  }
+}

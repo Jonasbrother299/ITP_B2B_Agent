@@ -1,7 +1,37 @@
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
+import AppLayout from './components/layout/AppLayout.jsx'
+import Angebotsvergleich from './pages/Angebotsvergleich.jsx'
+import Bedarfserkennung from './pages/Bedarfserkennung.jsx'
+import Bestellungen from './pages/Bestellungen.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import Freigaben from './pages/Freigaben.jsx'
+import Lieferantensuche from './pages/Lieferantensuche.jsx'
+import RegelnGovernance from './pages/RegelnGovernance.jsx'
+import Reporting from './pages/Reporting.jsx'
+import RFQs from './pages/RFQs.jsx'
+import Verhandlungen from './pages/Verhandlungen.jsx'
 
 function App() {
-  return <Dashboard />
+  return (
+    <HashRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route index element={<Navigate replace to="/dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/bedarfserkennung" element={<Bedarfserkennung />} />
+          <Route path="/lieferantensuche" element={<Lieferantensuche />} />
+          <Route path="/rfqs" element={<RFQs />} />
+          <Route path="/angebotsvergleich" element={<Angebotsvergleich />} />
+          <Route path="/verhandlungen" element={<Verhandlungen />} />
+          <Route path="/freigaben" element={<Freigaben />} />
+          <Route path="/bestellungen" element={<Bestellungen />} />
+          <Route path="/reporting" element={<Reporting />} />
+          <Route path="/regeln-governance" element={<RegelnGovernance />} />
+          <Route path="*" element={<Navigate replace to="/dashboard" />} />
+        </Route>
+      </Routes>
+    </HashRouter>
+  )
 }
 
 export default App

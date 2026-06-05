@@ -1,8 +1,8 @@
 function SectionHeader({ title, eyebrow }) {
   return (
     <div className="section-header">
-      <span>{eyebrow}</span>
       <h2>{title}</h2>
+      <span>{eyebrow}</span>
     </div>
   )
 }
