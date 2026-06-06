@@ -1,19 +1,76 @@
-import { useState } from 'react'
 import StatusPill from '../components/StatusPill.jsx'
-import {
-  agentGovernance,
-  autonomySettings,
-  complianceSettings,
-  escalationRules,
-} from '../data/governanceData.js'
-
-const escalationOptions = [
-  'Human-in-the-Loop',
-  'Freigabe erforderlich',
-  'Einkauf entscheidet',
-]
+import { useProcurement } from '../context/useProcurement.js'
+import { useToast } from '../context/useToast.js'
 
 const autonomyLevels = ['Niedrig', 'Mittel', 'Hoch']
+
+const escalationSettings = [
+  {
+    key: 'priceDeviation',
+    label: 'Preisabweichung über Grenze eskalieren',
+    description: 'Leitet Angebote außerhalb definierter Preisgrenzen an den Einkauf weiter.',
+  },
+  {
+    key: 'newSuppliers',
+    label: 'Neue Lieferanten immer zur Freigabe',
+    description: 'Erzwingt Prüfung bei Lieferanten ohne vollständige Historie.',
+  },
+  {
+    key: 'contractChanges',
+    label: 'Vertragsänderung zur Prüfung weiterleiten',
+    description: 'Stoppt autonome Entscheidungen bei abweichenden Vertragsbedingungen.',
+  },
+  {
+    key: 'deliveryDelay',
+    label: 'Lieferverzug bei kritischem Material eskalieren',
+    description: 'Hebt Verzögerungsrisiken für kritische Bedarfe hervor.',
+  },
+]
+
+const complianceSettings = [
+  {
+    key: 'decisionLog',
+    label: 'Alle KI-Entscheidungen protokollieren',
+    description: 'Speichert Entscheidungsgrundlagen für spätere Nachvollziehbarkeit.',
+  },
+  {
+    key: 'showDataSources',
+    label: 'Datenquelle je Empfehlung anzeigen',
+    description: 'Zeigt pro Empfehlung die verwendeten Datenquellen an.',
+  },
+  {
+    key: 'auditLog',
+    label: 'Audit-Log revisionssicher speichern',
+    description: 'Markiert Governance-relevante Ereignisse für Audits.',
+  },
+]
+
+const agents = [
+  {
+    name: 'Sourcing Agent',
+    status: 'Aktiv',
+    tone: 'blue',
+    description: 'Identifiziert passende Lieferanten und bewertet Marktoptionen.',
+  },
+  {
+    name: 'Negotiation Agent',
+    status: 'Aktiv',
+    tone: 'purple',
+    description: 'Verhandelt Preise und Konditionen innerhalb freigegebener Grenzen.',
+  },
+  {
+    name: 'Intelligence Agent',
+    status: 'Aktiv',
+    tone: 'warning',
+    description: 'Erkennt Bedarfe, Risiken und Empfehlungen aus Prozessdaten.',
+  },
+  {
+    name: 'Reporting Agent',
+    status: 'Aktiv',
+    tone: 'active',
+    description: 'Erstellt Kennzahlen, Management-Sichten und Prozessauswertungen.',
+  },
+]
 
 function SettingsSection({ title, children, modifier = '' }) {
   return (
@@ -24,14 +81,14 @@ function SettingsSection({ title, children, modifier = '' }) {
   )
 }
 
-function SettingCard({ setting, children }) {
+function SettingCard({ setting, children, variant = 'default' }) {
   return (
-    <article className="settings-page__card">
-      <div className="settings-page__row">
-        <div>
-          <span>{setting.label}</span>
-          {setting.description && <p>{setting.description}</p>}
-        </div>
+    <article className={`settings-page__card setting-control setting-control--${variant}`}>
+      <div className="setting-control__content">
+        <span className="setting-control__title">{setting.label}</span>
+        {setting.description && <p className="setting-control__description">{setting.description}</p>}
+      </div>
+      <div className="setting-control__actions">
         {children}
       </div>
     </article>
@@ -45,31 +102,33 @@ function NumericControl({ max, min = 0, onChange, step = 1, suffix, value }) {
 
   return (
     <div className="stepper-control">
-      <div className="stepper-control__main">
+      <div className="stepper-control__main setting-control__stepper">
         <button className="btn btn--ghost btn--small" type="button" onClick={() => updateValue(value - step)}>
           −
         </button>
-        <strong>{value.toLocaleString('de-DE')} {suffix}</strong>
+        <strong className="setting-control__value">{value.toLocaleString('de-DE')} {suffix}</strong>
         <button className="btn btn--ghost btn--small" type="button" onClick={() => updateValue(value + step)}>
           +
         </button>
       </div>
       <input
+        className="setting-control__slider"
         max={max}
         min={min}
+        step={step}
         type="range"
         value={value}
         onChange={(event) => updateValue(Number(event.target.value))}
       />
-      <div className="stepper-control__limits">
-        <span>{min} {suffix}</span>
+      <div className="stepper-control__limits setting-control__range-labels">
+        <span>{min.toLocaleString('de-DE')} {suffix}</span>
         <span>{max.toLocaleString('de-DE')} {suffix}</span>
       </div>
     </div>
   )
 }
 
-function SwitchControl({ checked, label, onChange }) {
+function SwitchControl({ checked, onChange }) {
   return (
     <button
       className={`switch-control ${checked ? 'switch-control--on' : ''}`}
@@ -79,7 +138,6 @@ function SwitchControl({ checked, label, onChange }) {
       <span className="switch-control__track">
         <i />
       </span>
-      <span>{label}</span>
       <strong>{checked ? 'Aktiv' : 'Inaktiv'}</strong>
     </button>
   )
@@ -103,25 +161,36 @@ function SegmentedControl({ onChange, value }) {
 }
 
 function RegelnGovernance() {
-  const [priceRange, setPriceRange] = useState(10)
-  const [orderLimit, setOrderLimit] = useState(5000)
-  const [negotiationDuration, setNegotiationDuration] = useState(48)
-  const [newSupplierApproval, setNewSupplierApproval] = useState(true)
-  const [escalations, setEscalations] = useState(
-    escalationRules.map((rule) => rule.value),
-  )
-  const [compliance, setCompliance] = useState(
-    complianceSettings.reduce(
-      (values, setting) => ({ ...values, [setting.label]: setting.value === 'Aktiv' }),
-      {},
-    ),
-  )
-  const [agentAutonomy, setAgentAutonomy] = useState(
-    agentGovernance.reduce(
-      (values, agent) => ({ ...values, [agent.name]: agent.autonomy }),
-      {},
-    ),
-  )
+  const {
+    agentAutonomyLevels,
+    governanceSettings,
+    updateAgentAutonomyLevel,
+    updateGovernanceSetting,
+  } = useProcurement()
+  const { showToast } = useToast()
+  const { autonomyLimits, compliance, escalationRules } = governanceSettings
+
+  const updateAutonomyLimit = (key, value) => {
+    updateGovernanceSetting('autonomyLimits', key, value)
+    showToast('Regel aktualisiert.')
+  }
+
+  const updateEscalation = (key, value) => {
+    updateGovernanceSetting('escalationRules', key, value)
+    showToast('Eskalationsregel aktualisiert.')
+  }
+
+  const updateCompliance = (key, value) => {
+    updateGovernanceSetting('compliance', key, value)
+    showToast('Compliance-Einstellung aktualisiert.')
+  }
+
+  const updateAgent = (agentName, level) => {
+    updateAgentAutonomyLevel(agentName, level)
+    showToast('Agenten-Autonomie aktualisiert.')
+  }
+
+  const activeEscalations = Object.values(escalationRules).filter(Boolean).length
 
   return (
     <section className="settings-page">
@@ -133,23 +202,30 @@ function RegelnGovernance() {
         <span>ProcureAI Einstellungen</span>
         <h1>Regeln & Governance</h1>
         <p>
-          Definieren Sie, welche Entscheidungen KI-Agenten autonom treffen dürfen und
-          wann menschliche Freigaben erforderlich sind.
+          Definieren Sie, welche Entscheidungen KI-Agenten autonom treffen dürfen
+          und wann menschliche Freigaben erforderlich sind.
         </p>
       </header>
 
-      <SettingsSection title="Autonomiegrenzen">
+      <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy">
         <SettingCard
           setting={{
-            ...autonomySettings[0],
+            label: 'Preisverhandlungsspielraum',
             description: 'Legt fest, in welchem Rahmen der Negotiation Agent autonom verhandeln darf.',
           }}
+          variant="numeric"
         >
-          <NumericControl max={25} onChange={setPriceRange} suffix="%" value={priceRange} />
+          <NumericControl max={25} onChange={(value) => updateAutonomyLimit('priceRange', value)} suffix="%" value={autonomyLimits.priceRange} />
         </SettingCard>
 
-        <SettingCard setting={autonomySettings[1]}>
-          <NumericControl max={25000} onChange={setOrderLimit} step={500} suffix="€" value={orderLimit} />
+        <SettingCard
+          setting={{
+            label: 'Maximale automatische Bestellsumme',
+            description: 'Begrenzt Bestellungen, die ohne zusätzliche Freigabe vorbereitet werden.',
+          }}
+          variant="numeric"
+        >
+          <NumericControl max={25000} onChange={(value) => updateAutonomyLimit('orderLimit', value)} step={500} suffix="€" value={autonomyLimits.orderLimit} />
         </SettingCard>
 
         <SettingCard
@@ -157,58 +233,36 @@ function RegelnGovernance() {
             label: 'Maximale Verhandlungsdauer',
             description: 'Begrenzt automatische Verhandlungen, bevor eine Eskalation erfolgt.',
           }}
+          variant="numeric"
         >
-          <NumericControl max={96} onChange={setNegotiationDuration} step={4} suffix="h" value={negotiationDuration} />
-        </SettingCard>
-
-        <SettingCard setting={autonomySettings[2]}>
-          <SwitchControl
-            checked={newSupplierApproval}
-            label="Neue Lieferanten"
-            onChange={setNewSupplierApproval}
-          />
+          <NumericControl max={96} min={1} onChange={(value) => updateAutonomyLimit('negotiationDuration', value)} suffix="h" value={autonomyLimits.negotiationDuration} />
         </SettingCard>
       </SettingsSection>
 
-      <SettingsSection title="Eskalationsregeln">
-        {escalationRules.map((setting, index) => (
-          <SettingCard key={setting.label} setting={setting}>
-            <select
-              className="form-field__select settings-page__select"
-              value={escalations[index]}
-              onChange={(event) => {
-                const nextEscalations = [...escalations]
-                nextEscalations[index] = event.target.value
-                setEscalations(nextEscalations)
-              }}
-            >
-              {escalationOptions.map((option) => (
-                <option key={option}>{option}</option>
-              ))}
-            </select>
+      <SettingsSection title="Eskalationsregeln" modifier="settings-page__grid--toggles">
+        {escalationSettings.map((setting) => (
+          <SettingCard key={setting.key} setting={setting} variant="toggle">
+            <SwitchControl
+              checked={escalationRules[setting.key]}
+              onChange={(checked) => updateEscalation(setting.key, checked)}
+            />
           </SettingCard>
         ))}
       </SettingsSection>
 
-      <SettingsSection title="Compliance & Nachvollziehbarkeit">
+      <SettingsSection title="Compliance & Nachvollziehbarkeit" modifier="settings-page__grid--toggles">
         {complianceSettings.map((setting) => (
-          <SettingCard key={setting.label} setting={setting}>
+          <SettingCard key={setting.key} setting={setting} variant="toggle">
             <SwitchControl
-              checked={compliance[setting.label]}
-              label={setting.label}
-              onChange={(checked) =>
-                setCompliance({
-                  ...compliance,
-                  [setting.label]: checked,
-                })
-              }
+              checked={compliance[setting.key]}
+              onChange={(checked) => updateCompliance(setting.key, checked)}
             />
           </SettingCard>
         ))}
       </SettingsSection>
 
       <SettingsSection title="Agenten-Steuerung" modifier="settings-page__grid--agents">
-        {agentGovernance.map((agent) => (
+        {agents.map((agent) => (
           <article
             className={`settings-page__agent-card settings-page__agent-card--${agent.tone}`}
             key={agent.name}
@@ -221,18 +275,20 @@ function RegelnGovernance() {
             <footer>
               <span>Autonomielevel</span>
               <SegmentedControl
-                value={agentAutonomy[agent.name]}
-                onChange={(level) =>
-                  setAgentAutonomy({
-                    ...agentAutonomy,
-                    [agent.name]: level,
-                  })
-                }
+                value={agentAutonomyLevels[agent.name]}
+                onChange={(level) => updateAgent(agent.name, level)}
               />
             </footer>
           </article>
         ))}
       </SettingsSection>
+
+      <section className="settings-page__summary">
+        <h2>Aktuelle Governance-Auswirkung</h2>
+        <p>Negotiation Agent darf bis ±{autonomyLimits.priceRange} % autonom verhandeln.</p>
+        <p>Automatische Bestellungen sind bis {autonomyLimits.orderLimit.toLocaleString('de-DE')} € erlaubt.</p>
+        <p>{activeEscalations} aktive Eskalationsregeln leiten Freigaben an den Einkauf weiter.</p>
+      </section>
     </section>
   )
 }

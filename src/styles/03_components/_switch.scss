@@ -1,9 +1,10 @@
 .switch-control {
   display: inline-grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto;
   align-items: center;
   gap: 10px;
-  width: min(260px, 100%);
+  width: auto;
+  min-width: 118px;
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 5px 10px 5px 5px;
@@ -27,15 +28,10 @@
     box-shadow: var(--focus-ring);
   }
 
-  > span:not(.switch-control__track) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   strong {
     color: #a4adbb;
     font-size: 11px;
+    white-space: nowrap;
   }
 }
 

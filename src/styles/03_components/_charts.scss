@@ -5,6 +5,10 @@
   padding: 22px;
 }
 
+.chart-grid--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .chart-card {
   min-height: 240px;
   border: 1px solid var(--line);
@@ -162,6 +166,7 @@
 
 @media (max-width: 1320px) {
   .chart-grid,
+  .chart-grid--four,
   .supplier-comparison {
     grid-template-columns: 1fr;
   }

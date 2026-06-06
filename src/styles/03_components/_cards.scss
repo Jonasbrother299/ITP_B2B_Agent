@@ -117,7 +117,8 @@
 }
 
 .info-card {
-  min-height: 190px;
+  min-width: 0;
+  min-height: 170px;
   padding: 24px;
   border-color: rgba(148, 163, 184, 0.14);
   background:
@@ -138,6 +139,7 @@
   span {
     display: grid;
     place-items: center;
+    flex: 0 0 auto;
     width: 40px;
     height: 40px;
     border-radius: 10px;
@@ -151,6 +153,8 @@
     color: #eef2f8;
     font-size: 18px;
     line-height: 1.25;
+    min-width: 0;
+    overflow-wrap: normal;
   }
 
   > strong {
@@ -166,5 +170,7 @@
     color: #8791a1;
     font-size: 13px;
     line-height: 1.55;
+    min-width: 0;
+    overflow-wrap: normal;
   }
 }
