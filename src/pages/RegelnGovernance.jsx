@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import StatusPill from '../components/StatusPill.jsx'
 import { useProcurement } from '../context/useProcurement.js'
 import { useToast } from '../context/useToast.js'
@@ -72,11 +73,50 @@ const agents = [
   },
 ]
 
-function SettingsSection({ title, children, modifier = '' }) {
+const autonomyDescriptions = {
+  'Sourcing Agent': {
+    Niedrig: 'Schlägt passende Lieferanten vor und bewertet Marktoptionen. Entscheidungen bleiben vollständig beim Einkaufsteam.',
+    Mittel: 'Priorisiert Lieferanten automatisch, erstellt Vorschläge für RFQs und markiert Risiken zur Prüfung.',
+    Hoch: 'Startet definierte Sourcing-Schritte eigenständig innerhalb freigegebener Regeln und meldet nur kritische Abweichungen.',
+  },
+  'Negotiation Agent': {
+    Niedrig: 'Bereitet Verhandlungsargumente vor und zeigt mögliche Einsparpotenziale an.',
+    Mittel: 'Erstellt Gegenangebote und schlägt Verhandlungsstrategien innerhalb definierter Grenzen vor.',
+    Hoch: 'Führt standardisierte Preis- und Konditionsverhandlungen eigenständig innerhalb freigegebener Parameter.',
+  },
+  'Intelligence Agent': {
+    Niedrig: 'Analysiert Prozessdaten und weist auf Bedarfe, Risiken und Auffälligkeiten hin.',
+    Mittel: 'Priorisiert Risiken, erkennt Muster und gibt konkrete Handlungsempfehlungen.',
+    Hoch: 'Überwacht Datenquellen kontinuierlich, erkennt kritische Entwicklungen und stößt empfohlene Maßnahmen automatisch an.',
+  },
+  'Reporting Agent': {
+    Niedrig: 'Erstellt einfache Kennzahlen und Übersichten für operative Auswertungen.',
+    Mittel: 'Generiert Management-Sichten, erkennt Trends und hebt relevante Abweichungen hervor.',
+    Hoch: 'Erstellt Reports automatisch, bewertet Entwicklungen und bereitet Entscheidungsgrundlagen eigenständig vor.',
+  },
+}
+
+const readSavedAgentLevels = (fallbackLevels) => {
+  try {
+    const savedLevels = window.localStorage.getItem('procureai-agent-autonomy-levels')
+    return savedLevels ? { ...fallbackLevels, ...JSON.parse(savedLevels) } : fallbackLevels
+  } catch {
+    return fallbackLevels
+  }
+}
+
+function SettingsSection({ title, children, modifier = '', onSave }) {
   return (
     <section className="settings-page__section">
       <h2>{title}</h2>
       <div className={`settings-page__grid ${modifier}`}>{children}</div>
+      {onSave && (
+        <footer className="settings-page__section-actions">
+          <button className="btn btn--primary" type="button" onClick={onSave}>
+            Speichern
+          </button>
+        </footer>
+      )}
     </section>
   )
 }
@@ -169,6 +209,9 @@ function RegelnGovernance() {
   } = useProcurement()
   const { showToast } = useToast()
   const { autonomyLimits, compliance, escalationRules } = governanceSettings
+  const [draftAgentAutonomyLevels, setDraftAgentAutonomyLevels] = useState(() =>
+    readSavedAgentLevels(agentAutonomyLevels),
+  )
 
   const updateAutonomyLimit = (key, value) => {
     updateGovernanceSetting('autonomyLimits', key, value)
@@ -185,9 +228,46 @@ function RegelnGovernance() {
     showToast('Compliance-Einstellung aktualisiert.')
   }
 
-  const updateAgent = (agentName, level) => {
-    updateAgentAutonomyLevel(agentName, level)
-    showToast('Agenten-Autonomie aktualisiert.')
+  const updateAgentDraft = (agentName, level) => {
+    setDraftAgentAutonomyLevels((levels) => ({
+      ...levels,
+      [agentName]: level,
+    }))
+  }
+
+  const saveAgentSettings = () => {
+    Object.entries(draftAgentAutonomyLevels).forEach(([agentName, level]) => {
+      updateAgentAutonomyLevel(agentName, level)
+    })
+    window.localStorage.setItem(
+      'procureai-agent-autonomy-levels',
+      JSON.stringify(draftAgentAutonomyLevels),
+    )
+    showToast('Agenten-Einstellungen gespeichert.')
+  }
+
+  const saveAutonomySettings = () => {
+    window.localStorage.setItem(
+      'procureai-autonomy-settings',
+      JSON.stringify(autonomyLimits),
+    )
+    showToast('Autonomiegrenzen gespeichert.')
+  }
+
+  const saveEscalationSettings = () => {
+    window.localStorage.setItem(
+      'procureai-escalation-settings',
+      JSON.stringify(escalationRules),
+    )
+    showToast('Eskalationsregeln gespeichert.')
+  }
+
+  const saveComplianceSettings = () => {
+    window.localStorage.setItem(
+      'procureai-compliance-settings',
+      JSON.stringify(compliance),
+    )
+    showToast('Compliance-Einstellungen gespeichert.')
   }
 
   const activeEscalations = Object.values(escalationRules).filter(Boolean).length
@@ -207,7 +287,7 @@ function RegelnGovernance() {
         </p>
       </header>
 
-      <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy">
+      <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy" onSave={saveAutonomySettings}>
         <SettingCard
           setting={{
             label: 'Preisverhandlungsspielraum',
@@ -239,7 +319,7 @@ function RegelnGovernance() {
         </SettingCard>
       </SettingsSection>
 
-      <SettingsSection title="Eskalationsregeln" modifier="settings-page__grid--toggles">
+      <SettingsSection title="Eskalationsregeln" modifier="settings-page__grid--toggles" onSave={saveEscalationSettings}>
         {escalationSettings.map((setting) => (
           <SettingCard key={setting.key} setting={setting} variant="toggle">
             <SwitchControl
@@ -250,7 +330,7 @@ function RegelnGovernance() {
         ))}
       </SettingsSection>
 
-      <SettingsSection title="Compliance & Nachvollziehbarkeit" modifier="settings-page__grid--toggles">
+      <SettingsSection title="Compliance & Nachvollziehbarkeit" modifier="settings-page__grid--toggles" onSave={saveComplianceSettings}>
         {complianceSettings.map((setting) => (
           <SettingCard key={setting.key} setting={setting} variant="toggle">
             <SwitchControl
@@ -271,17 +351,23 @@ function RegelnGovernance() {
               <h3>{agent.name}</h3>
               <StatusPill tone={agent.tone}>{agent.status}</StatusPill>
             </div>
-            <p>{agent.description}</p>
+            <p>{autonomyDescriptions[agent.name][draftAgentAutonomyLevels[agent.name]]}</p>
             <footer>
               <span>Autonomielevel</span>
               <SegmentedControl
-                value={agentAutonomyLevels[agent.name]}
-                onChange={(level) => updateAgent(agent.name, level)}
+                value={draftAgentAutonomyLevels[agent.name]}
+                onChange={(level) => updateAgentDraft(agent.name, level)}
               />
             </footer>
           </article>
         ))}
       </SettingsSection>
+
+      <div className="settings-save-bar">
+        <button className="btn btn--primary" type="button" onClick={saveAgentSettings}>
+          Speichern
+        </button>
+      </div>
 
       <section className="settings-page__summary">
         <h2>Aktuelle Governance-Auswirkung</h2>
