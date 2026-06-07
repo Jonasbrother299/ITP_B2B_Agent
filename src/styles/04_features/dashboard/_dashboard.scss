@@ -175,13 +175,6 @@
 
   .agent-card__progress {
     margin-top: 12px;
-    grid-template-columns: auto auto;
-    justify-content: start;
-    column-gap: 10px;
-  }
-
-  .agent-card__progress-value {
-    justify-self: start;
   }
 }
 
@@ -254,24 +247,27 @@
     font-size: 12px;
   }
 
-  .agent-card__progress-value {
+  .agent-card__progress-label {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    gap: 10px;
+
+    span {
+      color: #aeb7c7;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  }
+
+  .agent-card__progress-percent {
     display: inline-flex;
     align-items: center;
     justify-self: end;
-    gap: 6px;
+    color: #8d96a8;
+    font-size: 12px;
     white-space: nowrap;
-
-    strong {
-      color: #cfd7e6;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    em {
-      color: #7d8798;
-      font-size: 12px;
-      font-style: normal;
-    }
   }
 
   i {
