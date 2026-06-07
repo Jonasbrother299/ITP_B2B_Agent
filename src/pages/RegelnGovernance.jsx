@@ -208,17 +208,14 @@ function RegelnGovernance() {
 
   const updateAutonomyLimit = (key, value) => {
     updateGovernanceSetting('autonomyLimits', key, value)
-    showToast('Regel aktualisiert.')
   }
 
   const updateEscalation = (key, value) => {
     updateGovernanceSetting('escalationRules', key, value)
-    showToast('Eskalationsregel aktualisiert.')
   }
 
   const updateCompliance = (key, value) => {
     updateGovernanceSetting('compliance', key, value)
-    showToast('Compliance-Einstellung aktualisiert.')
   }
 
   const updateAgentDraft = (agentName, level) => {

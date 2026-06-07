@@ -175,6 +175,13 @@
 
   .agent-card__progress {
     margin-top: 12px;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    column-gap: 10px;
+  }
+
+  .agent-card__progress-value {
+    justify-self: start;
   }
 }
 
@@ -245,6 +252,26 @@
   span {
     color: #7d8798;
     font-size: 12px;
+  }
+
+  .agent-card__progress-value {
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    gap: 6px;
+    white-space: nowrap;
+
+    strong {
+      color: #cfd7e6;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    em {
+      color: #7d8798;
+      font-size: 12px;
+      font-style: normal;
+    }
   }
 
   i {

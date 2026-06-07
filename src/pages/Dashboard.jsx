@@ -101,6 +101,7 @@ function Dashboard() {
       progress: negotiationCase ? 74 : 38,
       status: negotiationCase ? 'Verhandlung läuft' : 'Bereit',
       progressValue: '12',
+      progressMeta: `${negotiationCase ? 74 : 38}%`,
       tone: 'purple',
       path: '/verhandlungen',
     },
