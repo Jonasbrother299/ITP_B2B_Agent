@@ -7,16 +7,6 @@ import ProcurementTable from '../components/tables/ProcurementTable.jsx'
 import { useProcurement } from '../context/useProcurement.js'
 import { dataSources } from '../data/dashboardData.js'
 
-const processSteps = [
-  { label: 'Bedarf erkannt', path: '/bedarfserkennung' },
-  { label: 'RFQ', path: '/rfqs' },
-  { label: 'Angebotsvergleich', path: '/angebotsvergleich' },
-  { label: 'Verhandlung', path: '/verhandlungen' },
-  { label: 'Freigabe', path: '/freigaben' },
-  { label: 'Bestellung', path: '/bestellungen' },
-  { label: 'Reporting', path: '/reporting' },
-]
-
 const riskTone = {
   Niedrig: 'active',
   Mittel: 'warning',
@@ -234,15 +224,6 @@ function Dashboard() {
         </div>
       </section>
 
-      <nav className="process-stepper" aria-label="Procurement Prozess">
-        {processSteps.map((step, index) => (
-          <Link key={step.path} to={step.path}>
-            <span>{index + 1}</span>
-            {step.label}
-          </Link>
-        ))}
-      </nav>
-
       <section className="kpi-grid" aria-label="Procurement KPIs">
         {kpis.map((metric) => (
           <MetricCard metric={metric} key={metric.label} />
@@ -300,20 +281,8 @@ function Dashboard() {
         </div>
 
         <aside className="dashboard__aside">
-          <section className="panel panel--agents panel--agents-compact">
-            <SectionHeader
-              eyebrow="Status aus Prototyp-State"
-              title="Aktive KI-Agenten"
-            />
-            <div className="agent-list agent-list--compact">
-              {agents.map((agent) => (
-                <AgentCard agent={agent} key={agent.name} />
-              ))}
-            </div>
-          </section>
-
           <section className="panel recommendations">
-            <SectionHeader eyebrow={`${recommendations.length} aktive Empfehlungen`} title="System Intelligence" />
+            <SectionHeader eyebrow={`${recommendations.length} aktive Hinweise`} title="Empfehlungen" />
             <div className="recommendations__grid">
               {recommendations.map((recommendation) => (
                 <Link
@@ -332,14 +301,14 @@ function Dashboard() {
             </div>
           </section>
 
-          <section className="panel data-sources">
-            <SectionHeader eyebrow={`${dataSources.length} von ${dataSources.length} aktiv`} title="Datenquellen" />
-            <div className="data-sources__list">
-              {dataSources.map((source) => (
-                <div className="data-source" key={source}>
-                  <span>{source}</span>
-                  <strong>Verbunden</strong>
-                </div>
+          <section className="panel panel--agents panel--agents-compact">
+            <SectionHeader
+              eyebrow="Status aus Prototyp-State"
+              title="Aktive KI-Agenten"
+            />
+            <div className="agent-list agent-list--compact">
+              {agents.map((agent) => (
+                <AgentCard agent={agent} key={agent.name} />
               ))}
             </div>
           </section>
