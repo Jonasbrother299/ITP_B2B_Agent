@@ -17,10 +17,7 @@ function AgentCard({ agent }) {
         </div>
         <p>{agent.task}</p>
         <div className="agent-card__progress">
-          <span className="agent-card__progress-label">
-            {agent.detail}
-            {agent.progressValue ? <span>{agent.progressValue}</span> : null}
-          </span>
+          <span className="agent-card__progress-label">{agent.detail}</span>
           <span className="agent-card__progress-percent">{agent.progressMeta || `${agent.progress}%`}</span>
           <i>
             <b style={{ width: `${agent.progress}%` }} />

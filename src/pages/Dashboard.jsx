@@ -100,8 +100,7 @@ function Dashboard() {
       detail: 'Aktive Verhandlungen',
       progress: negotiationCase ? 74 : 38,
       status: negotiationCase ? 'Verhandlung läuft' : 'Bereit',
-      progressValue: '12',
-      progressMeta: `${negotiationCase ? 74 : 38}%`,
+      progressMeta: '12',
       tone: 'purple',
       path: '/verhandlungen',
     },
@@ -264,8 +263,6 @@ function Dashboard() {
                   </div>
                   <div className="decision-card__actions">
                     <Link className="btn btn--primary btn--small" to="/freigaben">Prüfen</Link>
-                    <Link className="btn btn--success btn--small" to="/freigaben">Freigeben</Link>
-                    <Link className="btn btn--ghost btn--small" to="/freigaben">Ablehnen</Link>
                   </div>
                 </article>
               ))}
