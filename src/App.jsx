@@ -7,6 +7,7 @@ import Angebotsvergleich from './pages/Angebotsvergleich.jsx'
 import Bedarfserkennung from './pages/Bedarfserkennung.jsx'
 import Bestellungen from './pages/Bestellungen.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import DataSourcesPage from './pages/settings/DataSourcesPage.jsx'
 import Freigaben from './pages/Freigaben.jsx'
 import Lieferantensuche from './pages/Lieferantensuche.jsx'
 import RegelnGovernance from './pages/RegelnGovernance.jsx'
@@ -33,6 +34,8 @@ function App() {
               <Route path="/bestellungen" element={<Bestellungen />} />
               <Route path="/reporting" element={<Reporting />} />
               <Route path="/regeln-governance" element={<RegelnGovernance />} />
+              <Route path="/settings" element={<Navigate replace to="/settings/data-sources" />} />
+              <Route path="/settings/data-sources" element={<DataSourcesPage />} />
               <Route path="*" element={<Navigate replace to="/dashboard" />} />
             </Route>
           </Routes>

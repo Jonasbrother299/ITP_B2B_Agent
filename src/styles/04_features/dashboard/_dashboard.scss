@@ -147,6 +147,10 @@
   grid-template-columns: 1fr 1fr;
 }
 
+.agent-list--compact {
+  grid-template-columns: 1fr;
+}
+
 .agent-card {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
@@ -172,6 +176,55 @@
     color: #8791a1;
     font-size: 13px;
     line-height: 1.5;
+  }
+}
+
+.panel--agents-compact {
+  .agent-card {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 11px;
+    min-height: 112px;
+    border-right: 0;
+    padding: 15px 18px;
+
+    &:nth-child(2n),
+    &:nth-last-child(-n + 2) {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    p {
+      display: none;
+    }
+  }
+
+  .agent-card__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .agent-card__heading {
+    align-items: flex-start;
+    gap: 8px;
+
+    strong {
+      font-size: 13px;
+    }
+
+    span {
+      font-size: 11px;
+      line-height: 1.25;
+    }
+  }
+
+  .agent-card__progress {
+    margin-top: 12px;
   }
 }
 

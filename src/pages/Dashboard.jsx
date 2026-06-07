@@ -251,18 +251,6 @@ function Dashboard() {
 
       <div className="dashboard__body">
         <div className="dashboard__main">
-          <section className="panel panel--agents">
-            <SectionHeader
-              eyebrow="4 Agenten im Einsatz · Status aus Prototyp-State"
-              title="Aktive KI-Agenten"
-            />
-            <div className="agent-list">
-              {agents.map((agent) => (
-                <AgentCard agent={agent} key={agent.name} />
-              ))}
-            </div>
-          </section>
-
           <section className="panel panel--decisions">
             <SectionHeader
               eyebrow={`${openApprovals.length} offene Fälle · Human-in-the-Loop`}
@@ -312,6 +300,18 @@ function Dashboard() {
         </div>
 
         <aside className="dashboard__aside">
+          <section className="panel panel--agents panel--agents-compact">
+            <SectionHeader
+              eyebrow="Status aus Prototyp-State"
+              title="Aktive KI-Agenten"
+            />
+            <div className="agent-list agent-list--compact">
+              {agents.map((agent) => (
+                <AgentCard agent={agent} key={agent.name} />
+              ))}
+            </div>
+          </section>
+
           <section className="panel recommendations">
             <SectionHeader eyebrow={`${recommendations.length} aktive Empfehlungen`} title="System Intelligence" />
             <div className="recommendations__grid">

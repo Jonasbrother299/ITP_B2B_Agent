@@ -10,3 +10,5 @@ export const navigationItems = [
   { label: 'Reporting', icon: 'P', path: '/reporting' },
   { label: 'Regeln & Governance', icon: 'G', path: '/regeln-governance' },
 ]
+
+export { settingsNavigationItems } from './settingsData.js'
