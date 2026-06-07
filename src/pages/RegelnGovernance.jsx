@@ -105,18 +105,11 @@ const readSavedAgentLevels = (fallbackLevels) => {
   }
 }
 
-function SettingsSection({ title, children, modifier = '', onSave }) {
+function SettingsSection({ title, children, modifier = '' }) {
   return (
     <section className="settings-page__section">
       <h2>{title}</h2>
       <div className={`settings-page__grid ${modifier}`}>{children}</div>
-      {onSave && (
-        <footer className="settings-page__section-actions">
-          <button className="btn btn--primary" type="button" onClick={onSave}>
-            Speichern
-          </button>
-        </footer>
-      )}
     </section>
   )
 }
@@ -246,30 +239,6 @@ function RegelnGovernance() {
     showToast('Agenten-Einstellungen gespeichert.')
   }
 
-  const saveAutonomySettings = () => {
-    window.localStorage.setItem(
-      'procureai-autonomy-settings',
-      JSON.stringify(autonomyLimits),
-    )
-    showToast('Autonomiegrenzen gespeichert.')
-  }
-
-  const saveEscalationSettings = () => {
-    window.localStorage.setItem(
-      'procureai-escalation-settings',
-      JSON.stringify(escalationRules),
-    )
-    showToast('Eskalationsregeln gespeichert.')
-  }
-
-  const saveComplianceSettings = () => {
-    window.localStorage.setItem(
-      'procureai-compliance-settings',
-      JSON.stringify(compliance),
-    )
-    showToast('Compliance-Einstellungen gespeichert.')
-  }
-
   const activeEscalations = Object.values(escalationRules).filter(Boolean).length
 
   return (
@@ -287,7 +256,7 @@ function RegelnGovernance() {
         </p>
       </header>
 
-      <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy" onSave={saveAutonomySettings}>
+      <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy">
         <SettingCard
           setting={{
             label: 'Preisverhandlungsspielraum',
@@ -319,7 +288,7 @@ function RegelnGovernance() {
         </SettingCard>
       </SettingsSection>
 
-      <SettingsSection title="Eskalationsregeln" modifier="settings-page__grid--toggles" onSave={saveEscalationSettings}>
+      <SettingsSection title="Eskalationsregeln" modifier="settings-page__grid--toggles">
         {escalationSettings.map((setting) => (
           <SettingCard key={setting.key} setting={setting} variant="toggle">
             <SwitchControl
@@ -330,7 +299,7 @@ function RegelnGovernance() {
         ))}
       </SettingsSection>
 
-      <SettingsSection title="Compliance & Nachvollziehbarkeit" modifier="settings-page__grid--toggles" onSave={saveComplianceSettings}>
+      <SettingsSection title="Compliance & Nachvollziehbarkeit" modifier="settings-page__grid--toggles">
         {complianceSettings.map((setting) => (
           <SettingCard key={setting.key} setting={setting} variant="toggle">
             <SwitchControl
