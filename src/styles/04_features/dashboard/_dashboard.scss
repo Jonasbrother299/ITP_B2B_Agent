@@ -131,11 +131,12 @@
 
 .panel--agents-compact {
   .agent-card {
-    grid-template-columns: 34px minmax(0, 1fr);
-    gap: 11px;
-    min-height: 112px;
+    grid-template-columns: 36px minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+    min-height: 118px;
     border-right: 0;
-    padding: 15px 18px;
+    padding: 18px 20px;
 
     &:nth-child(2n),
     &:nth-last-child(-n + 2) {
@@ -153,18 +154,31 @@
   }
 
   .agent-card__icon {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     font-size: 12px;
   }
 
+  .agent-card__content,
+  .agent-card__heading > div {
+    min-width: 0;
+  }
+
   .agent-card__heading {
-    align-items: flex-start;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+
+    .status-pill {
+      justify-self: end;
+      white-space: nowrap;
+    }
 
     strong {
       font-size: 13px;
+      line-height: 1.2;
     }
 
     span {
@@ -174,7 +188,9 @@
   }
 
   .agent-card__progress {
-    margin-top: 12px;
+    align-items: center;
+    column-gap: 14px;
+    margin-top: 16px;
   }
 }
 

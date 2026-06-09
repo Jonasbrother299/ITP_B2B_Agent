@@ -41,7 +41,7 @@ function ApprovalDetailsModal({ approval, onApprove, onClose, onReject }) {
       >
         <header className="modal__header">
           <div>
-            <span>Freigabeprüfung</span>
+            <span>Prüffall</span>
             <h2 id="approval-modal-title">{approval.title}</h2>
           </div>
           <StatusPill tone={riskTone[approval.riskLevel]}>
@@ -186,13 +186,13 @@ function Freigaben() {
 
           <div className="section-actions section-actions--standalone">
             <Link className="btn btn--primary" to="/bestellungen">
-              Zu Bestellungen
+              Bestellungen öffnen
             </Link>
           </div>
         </div>
 
         <aside className="info-panel">
-          <h2>Warum wurde eskaliert?</h2>
+          <h2>Warum ist eine Freigabe erforderlich?</h2>
           <p>
             Die Governance-Regeln stoppen autonome KI-Entscheidungen bei
             Preisabweichungen, Compliance-Lücken oder Vertragsänderungen und

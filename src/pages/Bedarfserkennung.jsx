@@ -40,7 +40,7 @@ function Bedarfserkennung() {
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Erkannte Bedarfe</h2>
-          <span>Bestand, Prognose und Vorschlag für die nächste Beschaffung</span>
+          <span>Bestand, Prognose und empfohlene nächste Schritte</span>
         </div>
         <div className="table-wrap">
           <table>

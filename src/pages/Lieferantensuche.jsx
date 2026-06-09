@@ -104,7 +104,7 @@ function Lieferantensuche() {
 
   const metrics = [
     {
-      title: 'Neue Lieferanten gefunden',
+      title: 'Neue Lieferanten',
       value: String(suppliers.filter((supplier) => supplier.status !== 'Bestehender Lieferant').length),
       text: 'aus Markt- und Risikodaten',
     },
@@ -164,7 +164,7 @@ function Lieferantensuche() {
 
       <section className="panel basic-page__section">
         <div className="section-header">
-          <h2>Filter</h2>
+          <h2>Lieferanten filtern</h2>
           <span>{filteredSuppliers.length} passende Lieferanten</span>
         </div>
         <div className="supplier-filters">
@@ -199,7 +199,7 @@ function Lieferantensuche() {
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Lieferanten</h2>
-          <span>Auswählen, vergleichen oder direkt RFQ vorbereiten</span>
+          <span>Lieferanten prüfen, vergleichen und für RFQs übernehmen</span>
         </div>
         <div className="table-wrap">
           <table>

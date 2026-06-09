@@ -17,7 +17,7 @@ function Topbar() {
 
       <label className="topbar__search">
         <span>Suche</span>
-        <input type="search" placeholder="Suche nach Lieferant, RFQ oder Bestellung" />
+        <input type="search" placeholder="Lieferant, RFQ oder Bestellung suchen" />
       </label>
 
       <div className="topbar__profile" aria-label="Signed in user">

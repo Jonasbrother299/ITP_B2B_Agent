@@ -23,7 +23,7 @@ export const pageContent = {
     description:
       'Identifikation geeigneter Lieferanten anhand von Bedarf, Marktinformationen, Vertragsdaten und Risikobewertungen.',
     cards: [
-      { title: 'Neue Lieferanten gefunden', value: '12', text: 'Aus Marktquellen und Datenbanken.' },
+      { title: 'Neue Lieferanten', value: '12', text: 'Aus Marktquellen und Datenbanken.' },
       { title: 'Bestehende Lieferanten', value: '48', text: 'Mit Vertrags- und Performancehistorie.' },
       { title: 'Lieferanten mit Risiko', value: '3', text: 'Erfordern Prüfung vor RFQ.' },
     ],
@@ -38,11 +38,11 @@ export const pageContent = {
     },
   },
   rfqs: {
-    title: 'RFQs',
+    title: 'Anfragen / RFQs',
     description:
       'Automatisierte Erstellung und Verwaltung von Angebotsanfragen an geeignete Lieferanten.',
     cards: [
-      { title: 'RFQ-Entwürfe', value: '4', text: 'Bereit zur Prüfung.' },
+      { title: 'Gespeicherte RFQ-Entwürfe', value: '4', text: 'Bereit zur Prüfung.' },
       { title: 'Versendete RFQs', value: '12', text: 'Diese Woche automatisiert.' },
       { title: 'Antworten im Eingang', value: '7', text: 'Für Vergleich verfügbar.' },
     ],
@@ -85,7 +85,7 @@ export const pageContent = {
   verhandlungen: {
     title: 'Verhandlungen',
     description:
-      'Überwachung automatisierter Preisverhandlungen innerhalb definierter Parameter.',
+      'Überblick über automatisierte Preis- und Konditionsverhandlungen innerhalb definierter Leitplanken.',
     cards: [
       { title: 'Aktive Verhandlungen', value: '6', text: 'Durch Agenten gesteuert.' },
       { title: 'Durchschnittliche Einsparung', value: '4,8 %', text: 'Über laufende Vorgänge.' },
@@ -117,7 +117,7 @@ export const pageContent = {
       { title: 'Lieferverzug bei kritischem Material', reason: 'Produktionslinie wäre ab KW 48 betroffen.', risk: 'Hoch', recommendation: 'Alternativlieferant aktivieren.', source: 'ERP & Lieferstatus' },
     ],
     infoBox: {
-      title: 'Warum wurde eskaliert?',
+      title: 'Warum ist eine Freigabe erforderlich?',
       text: 'Human-in-the-Loop wird ausgelöst, wenn Preisgrenzen, Risikoschwellen, Vertragsregeln oder Lieferkritikalität außerhalb der definierten Governance liegen.',
     },
   },
@@ -176,7 +176,7 @@ export const pageContent = {
     },
   },
   regelnGovernance: {
-    title: 'Regeln & Governance',
+    title: 'Governance-Regeln',
     description:
       'Konfiguration von Einkaufsregeln, Freigabegrenzen, Compliance-Prüfungen und Agenten-Leitplanken.',
     cards: ['Einkaufsregeln', 'Freigabegrenzen', 'Compliance-Prüfungen'],

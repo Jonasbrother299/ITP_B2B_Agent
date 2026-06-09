@@ -90,8 +90,8 @@ function RFQs() {
   return (
     <section className="basic-page">
       <div className="basic-page__hero">
-        <span>RFQ Management</span>
-        <h1>RFQs</h1>
+        <span>RFQ-Steuerung</span>
+        <h1>Anfragen / RFQs</h1>
         <p>
           Automatisierte Erstellung und Verwaltung von Angebotsanfragen an
           geeignete Lieferanten.
@@ -103,7 +103,7 @@ function RFQs() {
       </div>
 
       <div className="basic-page__cards">
-        <InfoCard title="RFQ-Entwürfe" value={String(rfqDrafts.length)} text="Gespeicherte Anfragen vor Versand." />
+        <InfoCard title="Gespeicherte RFQ-Entwürfe" value={String(rfqDrafts.length)} text="Gespeicherte Anfragen vor Versand." />
         <InfoCard title="Aktive RFQs" value={String(activeRFQs.length)} text="Versendet oder mit Angebotseingang." />
         <InfoCard title="Aus Bedarfserkennung" value={selectedNeedForRFQ ? '1' : '0'} text="Aktuell vorausgefüllter Bedarf." />
       </div>
@@ -111,7 +111,7 @@ function RFQs() {
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Neue RFQ erstellen</h2>
-          <span>Formular kann bearbeitet, gespeichert oder versendet werden</span>
+          <span>Anfrage bearbeiten, speichern oder versenden</span>
         </div>
         <form className="prototype-form" onSubmit={(event) => event.preventDefault()}>
           <label className="form-field">
@@ -179,7 +179,7 @@ function RFQs() {
 
       <section className="panel basic-page__section">
         <div className="section-header">
-          <h2>RFQ-Entwürfe</h2>
+          <h2>Gespeicherte RFQ-Entwürfe</h2>
           <span>{rfqDrafts.length} Entwürfe im lokalen Prototyp</span>
         </div>
         <div className="table-wrap">
@@ -207,7 +207,7 @@ function RFQs() {
               ))}
               {rfqDrafts.length === 0 && (
                 <tr>
-                  <td colSpan="6">Noch keine Entwürfe gespeichert.</td>
+                  <td colSpan="6">Noch keine RFQ-Entwürfe vorhanden.</td>
                 </tr>
               )}
             </tbody>

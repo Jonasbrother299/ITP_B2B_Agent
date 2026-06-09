@@ -117,8 +117,8 @@ function Angebotsvergleich() {
 
       <section className="panel basic-page__section">
         <div className="section-header">
-          <h2>Vergleichsvisualisierung</h2>
-          <span>CSS-basierte Balken ohne Chart-Bibliothek</span>
+          <h2>Angebotsbewertung</h2>
+          <span>Preis, Lieferzeit und Risiko im Vergleich</span>
         </div>
         <div className="comparison-bars">
           <ComparisonBar

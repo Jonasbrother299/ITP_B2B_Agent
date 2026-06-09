@@ -83,7 +83,7 @@ function OrderDetailModal({ onClose, onSimulateHandover, order }) {
             type="button"
             onClick={() => onSimulateHandover(order)}
           >
-            ERP-Übergabe simulieren
+            ERP-Übergabe vorbereiten
           </button>
           <button className="btn btn--ghost" type="button" onClick={onClose}>
             Schließen
@@ -129,7 +129,7 @@ function Bestellungen() {
   return (
     <section className="basic-page">
       <div className="basic-page__hero">
-        <span>Order Management</span>
+        <span>Bestellmanagement</span>
         <h1>Bestellungen</h1>
         <p>
           Übersicht über erstellte Bestellungen, ERP-Übergaben und laufende
@@ -150,7 +150,7 @@ function Bestellungen() {
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Bestellübersicht</h2>
-          <span>Demo-Bestellungen und lokal freigegebene Fälle</span>
+          <span>Erstellte und vorbereitete Bestellungen</span>
         </div>
         <div className="table-wrap">
           <table>

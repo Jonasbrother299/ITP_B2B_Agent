@@ -88,8 +88,8 @@ function Verhandlungen() {
         <span>Negotiation Agent</span>
         <h1>Verhandlungen</h1>
         <p>
-          Überwachung automatisierter Preisverhandlungen innerhalb definierter
-          Parameter.
+          Überblick über automatisierte Preis- und Konditionsverhandlungen
+          innerhalb definierter Leitplanken.
         </p>
       </div>
 
@@ -112,7 +112,7 @@ function Verhandlungen() {
             Verhandlung starten
           </button>
           <button className="btn btn--secondary" type="button" onClick={handleCounterOffer}>
-            Gegenangebot simulieren
+            Gegenangebot vorbereiten
           </button>
           <button className="btn btn--success" type="button" onClick={handleAcceptResult}>
             Ergebnis akzeptieren
@@ -126,7 +126,7 @@ function Verhandlungen() {
       <section className="basic-page__split">
         <article className="panel">
           <div className="section-header">
-            <h2>Verhandlungs-Timeline</h2>
+            <h2>Verhandlungsverlauf</h2>
             <span>Aktualisiert durch Prototyp-Aktionen</span>
           </div>
           <ol className="timeline-list">

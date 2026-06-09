@@ -8,7 +8,8 @@
 }
 
 .metric-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   min-height: 154px;
   padding: 20px 22px 18px;
   border-color: rgba(148, 163, 184, 0.14);
@@ -40,7 +41,7 @@
     line-height: 1;
   }
 
-  div {
+  .metric-card__change {
     margin-top: 6px;
   }
 
@@ -54,7 +55,6 @@
   small {
     display: block;
     height: 3px;
-    margin-top: 18px;
     border-radius: 999px;
     background: #202631;
     overflow: hidden;
@@ -66,6 +66,13 @@
       background: var(--blue);
     }
   }
+}
+
+.metric-card__indicators {
+  display: grid;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 18px;
 }
 
 .metric-card--link {
@@ -90,7 +97,6 @@
   align-items: end;
   gap: 4px;
   height: 34px;
-  margin-top: 10px !important;
 
   b {
     width: 8px;

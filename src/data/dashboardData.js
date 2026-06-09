@@ -1,6 +1,6 @@
 export const kpis = [
   {
-    label: 'Aktive Beschaffungsvorgänge',
+    label: 'Aktive Vorgänge',
     value: '24',
     change: '+3 heute',
     tone: 'blue',

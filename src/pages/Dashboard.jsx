@@ -40,9 +40,9 @@ function Dashboard() {
 
   const kpis = [
     {
-      label: 'Aktive Beschaffungsvorgänge',
+      label: 'Aktive Vorgänge',
       value: String(activeProcurementCount),
-      change: 'RFQs, Freigaben und Bestellungen',
+      change: 'RFQs, Freigaben, Bestellungen',
       tone: 'blue',
       progress: Math.min(activeProcurementCount * 10, 100),
       path: '/bestellungen',
@@ -58,7 +58,7 @@ function Dashboard() {
     {
       label: 'Einsparpotenzial',
       value: savingsPotential,
-      change: negotiationCase ? 'aus Verhandlung aktualisiert' : 'Demo-Prognose',
+      change: negotiationCase ? 'aus Verhandlung aktualisiert' : 'Prognosewert',
       tone: 'green',
       progress: negotiationCase ? 91 : 84,
       path: '/reporting',
@@ -97,10 +97,10 @@ function Dashboard() {
       name: 'Negotiation Agent',
       domain: 'Preisverhandlung',
       task: 'Verhandelt innerhalb definierter Governance-Grenzen.',
-      detail: 'Aktive Verhandlungen',
+      detail: '2 aktive Verhandlungen',
       progress: negotiationCase ? 74 : 38,
       status: negotiationCase ? 'Verhandlung läuft' : 'Bereit',
-      progressMeta: '12',
+      progressMeta: `${negotiationCase ? 74 : 38}%`,
       tone: 'purple',
       path: '/verhandlungen',
     },
@@ -117,7 +117,7 @@ function Dashboard() {
     {
       name: 'Reporting Agent',
       domain: 'KPI & Berichtswesen',
-      task: 'Erstellt Management-Sichten aus RFQs, Freigaben und Bestellungen.',
+      task: 'Erstellt Management-Sichten aus RFQs, Freigaben, Bestellungen.',
       detail: `${orders.length} Bestellungen ausgewertet`,
       progress: 58,
       status: 'Bereit',
@@ -185,7 +185,7 @@ function Dashboard() {
       path: '/freigaben',
     },
     activeRFQs.length > 0 && {
-      label: 'RFQs',
+      label: 'Anfragen / RFQs',
       text: 'Aktive RFQs können im Angebotsvergleich ausgewertet werden.',
       time: 'Heute',
       tone: 'purple',
@@ -205,14 +205,14 @@ function Dashboard() {
       <section className="hero-panel">
         <div className="hero-panel__content">
           <span>KI-gestützte Automatisierung</span>
-          <h1>Intelligenter Einkaufsprozess</h1>
+          <h1>KI-gestützter Einkaufsprozess</h1>
           <p>
             KI-Agenten überwachen Bedarfe, holen Angebote ein, vergleichen
             Lieferanten und eskalieren kritische Entscheidungen an den Einkauf.
           </p>
           <div className="hero-panel__meta">
             <span>4 Agenten aktiv</span>
-            <span>{activeProcurementCount} Vorgänge im State</span>
+            <span>{activeProcurementCount} aktive Vorgänge</span>
             <span>{dataSources.length} Datenquellen</span>
           </div>
         </div>
@@ -235,7 +235,7 @@ function Dashboard() {
           <section className="panel panel--decisions">
             <SectionHeader
               eyebrow={`${openApprovals.length} offene Fälle · Human-in-the-Loop`}
-              title="Human-in-the-Loop: Entscheidung erforderlich"
+              title="Freigabe durch Einkauf erforderlich"
             />
             <div className="decision-list">
               {openApprovals.length === 0 && (
@@ -271,7 +271,7 @@ function Dashboard() {
 
           <section className="panel">
             <SectionHeader
-              eyebrow={`${processRows.length} Vorgänge angezeigt`}
+              eyebrow={`${processRows.length} laufende Vorgänge`}
               title="Laufende Beschaffungsvorgänge"
             />
             <ProcurementTable processes={processRows} />
@@ -280,7 +280,7 @@ function Dashboard() {
 
         <aside className="dashboard__aside">
           <section className="panel recommendations">
-            <SectionHeader eyebrow={`${recommendations.length} aktive Hinweise`} title="Empfehlungen" />
+            <SectionHeader eyebrow={`${recommendations.length} aktive Hinweise`} title="KI-Empfehlungen" />
             <div className="recommendations__grid">
               {recommendations.map((recommendation) => (
                 <Link
@@ -301,7 +301,7 @@ function Dashboard() {
 
           <section className="panel panel--agents panel--agents-compact">
             <SectionHeader
-              eyebrow="Status aus Prototyp-State"
+              eyebrow="Aktueller Agentenstatus"
               title="Aktive KI-Agenten"
             />
             <div className="agent-list agent-list--compact">

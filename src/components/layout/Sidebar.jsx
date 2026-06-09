@@ -8,7 +8,7 @@ function Sidebar() {
         <div className="sidebar__mark">P</div>
         <div>
           <strong>ProcureAI</strong>
-          <span>B2B Einkauf · v2.1</span>
+          <span>KI-gestützter Einkauf</span>
         </div>
       </div>
 

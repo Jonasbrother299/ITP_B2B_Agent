@@ -100,14 +100,14 @@ function Reporting() {
         <InfoCard title="RFQ-Entwürfe" value={String(rfqDrafts.length)} text="gespeicherte RFQ-Vorlagen" />
         <InfoCard title="Offene Freigaben" value={String(openApprovals)} text="Human-in-the-Loop erforderlich" />
         <InfoCard title="Erstellte Bestellungen" value={String(orders.length)} text="inkl. vorbereiteter Bestellungen" />
-        <InfoCard title="Automatisierungsquote" value={`${automationRate} %`} text="dynamischer Demo-Wert" />
+        <InfoCard title="Automatisierungsquote" value={`${automationRate} %`} text="aktuell berechneter Wert" />
         <InfoCard title="Einsparpotenzial" value="8,4 %" text="aus Verhandlung und Sourcing" />
       </section>
 
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Einkaufskennzahlen</h2>
-          <span>CSS-basierte Auswertung ohne Chart-Bibliothek</span>
+          <span>Statusübersicht nach RFQs, Freigaben und Bestellungen</span>
         </div>
         <div className="chart-grid chart-grid--four">
           {charts.map((chart) => (
@@ -120,7 +120,7 @@ function Reporting() {
         <article className="panel">
           <div className="section-header">
             <h2>Letzte Aktivitäten</h2>
-            <span>aus dem lokalen Prototyp-State</span>
+            <span>aus den letzten Prozessaktionen</span>
           </div>
           <ol className="activity-list">
             {activityLog.map((entry, index) => (
@@ -147,7 +147,7 @@ function Reporting() {
         <section className="report-preview">
           <div className="section-header">
             <h2>Management-Report Einkauf</h2>
-            <span>generierte Vorschau</span>
+            <span>Report-Vorschau</span>
           </div>
           <div className="report-preview__grid">
             <p>Zusammenfassung der aktiven RFQs: {activeRFQs.length} aktive Vorgänge.</p>

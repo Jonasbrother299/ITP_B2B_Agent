@@ -245,8 +245,8 @@ function RegelnGovernance() {
       </div>
 
       <header className="settings-page__header">
-        <span>ProcureAI Einstellungen</span>
-        <h1>Regeln & Governance</h1>
+        <span>Governance Center</span>
+        <h1>Governance-Regeln</h1>
         <p>
           Definieren Sie, welche Entscheidungen KI-Agenten autonom treffen dürfen
           und wann menschliche Freigaben erforderlich sind.
@@ -307,7 +307,7 @@ function RegelnGovernance() {
         ))}
       </SettingsSection>
 
-      <SettingsSection title="Agenten-Steuerung" modifier="settings-page__grid--agents">
+      <SettingsSection title="Agenten-Autonomie" modifier="settings-page__grid--agents">
         {agents.map((agent) => (
           <article
             className={`settings-page__agent-card settings-page__agent-card--${agent.tone}`}
@@ -336,7 +336,7 @@ function RegelnGovernance() {
       </div>
 
       <section className="settings-page__summary">
-        <h2>Aktuelle Governance-Auswirkung</h2>
+        <h2>Auswirkung der aktuellen Regeln</h2>
         <p>Negotiation Agent darf bis ±{autonomyLimits.priceRange} % autonom verhandeln.</p>
         <p>Automatische Bestellungen sind bis {autonomyLimits.orderLimit.toLocaleString('de-DE')} € erlaubt.</p>
         <p>{activeEscalations} aktive Eskalationsregeln leiten Freigaben an den Einkauf weiter.</p>

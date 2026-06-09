@@ -31,7 +31,7 @@ function ProcurementTable({ processes }) {
               <td>{process.owner}</td>
               <td>
                 <Link className="btn btn--secondary btn--small table-action" to={process.path}>
-                  Öffnen
+                  Details
                 </Link>
               </td>
             </tr>

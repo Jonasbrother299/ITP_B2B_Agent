@@ -117,7 +117,7 @@ function OfferComparison({ page }) {
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Vergleichsindikatoren</h2>
-          <span>CSS-basierte Balken ohne Chart-Bibliothek</span>
+          <span>Preis, Lieferzeit und Risiko im Vergleich</span>
         </div>
         <div className="comparison-bars">
           {page.comparisonBars.map((group) => (
@@ -171,7 +171,7 @@ function TimelineSection({ page }) {
       <div className="panel basic-page__section">
         <div className="section-header">
           <h2>{page.parameterCard.title}</h2>
-          <span>Grenzen aus Regeln & Governance</span>
+          <span>Grenzen aus Governance-Regeln</span>
         </div>
         <div className="parameter-list">
           {page.parameterCard.items.map((item) => (

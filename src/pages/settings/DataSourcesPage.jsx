@@ -33,8 +33,8 @@ function SettingsHeader() {
         <span>Einstellungen</span>
         <h1>Datenquellen</h1>
         <p>
-          Übersicht über angebundene Systeme, Vertragsquellen und externe
-          Marktdaten für den KI-gestützten Einkaufsprozess.
+          Verbundene Systeme und Datenquellen für Bedarfserkennung, Sourcing,
+          Verhandlung und Reporting.
         </p>
       </div>
       <nav className="settings-tabs" aria-label="Einstellungen">

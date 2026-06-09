@@ -253,7 +253,7 @@ const initialActivityLog = [
   'Angebot wurde ausgewählt',
   'Verhandlungsergebnis vorbereitet',
   'Freigabe wurde erteilt',
-  'Bestellung wurde an ERP übergeben',
+  'Bestellung wurde an das ERP-System übergeben',
 ]
 
 const createNegotiationCase = (offer, rfq = demoRFQ) => ({
@@ -394,7 +394,7 @@ export function ProcurementProvider({ children }) {
     setSelectedOrder((currentOrder) =>
       currentOrder?.orderId === orderId ? { ...currentOrder, status } : currentOrder,
     )
-    addActivityLog(status === 'ERP-Übergabe erfolgt' ? 'Bestellung wurde an ERP übergeben' : `Bestellung wurde auf ${status} gesetzt`)
+    addActivityLog(status === 'ERP-Übergabe erfolgt' ? 'Bestellung wurde an das ERP-System übergeben' : `Bestellung wurde auf ${status} gesetzt`)
   }
 
   const updateGovernanceSetting = (section, key, value) => {
@@ -405,7 +405,7 @@ export function ProcurementProvider({ children }) {
         [key]: value,
       },
     }))
-    addActivityLog('Governance-Regel wurde aktualisiert')
+    addActivityLog('Governance-Einstellung aktualisiert')
   }
 
   const updateAgentAutonomyLevel = (agentName, level) => {
