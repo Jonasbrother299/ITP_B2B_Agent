@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+
+
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +25,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local Codex / Agent setup
+AGENTS.md
+.codex/
+.agents/
+docs/
+
+# Local Codex docs
+docs/PROJECT_CONTEXT.md
+docs/VERIFY.md
+docs/CODEX_REVIEW_MODE.md
+docs/KNOWN_ISSUES.md
+docs/CODEX_TASK_TEMPLATE.md
