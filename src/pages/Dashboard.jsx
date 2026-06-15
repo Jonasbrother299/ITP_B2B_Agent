@@ -262,7 +262,7 @@ function Dashboard() {
                     <small>{approval.dataSource} · {approval.relatedSupplier}</small>
                   </div>
                   <div className="decision-card__actions">
-                    <Link className="btn btn--primary btn--small" to="/freigaben">Prüfen</Link>
+                    <Link className="btn btn--primary btn--small" to={`/freigaben/${approval.id}`}>Prüfen</Link>
                   </div>
                 </article>
               ))}

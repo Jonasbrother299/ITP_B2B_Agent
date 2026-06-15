@@ -31,6 +31,7 @@ function App() {
               <Route path="/angebotsvergleich" element={<Angebotsvergleich />} />
               <Route path="/verhandlungen" element={<Verhandlungen />} />
               <Route path="/freigaben" element={<Freigaben />} />
+              <Route path="/freigaben/:id" element={<Freigaben />} />
               <Route path="/bestellungen" element={<Bestellungen />} />
               <Route path="/reporting" element={<Reporting />} />
               <Route path="/regeln-governance" element={<RegelnGovernance />} />

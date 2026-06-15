@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import StatusPill from '../components/StatusPill.jsx'
 import { useProcurement } from '../context/useProcurement.js'
 import { useToast } from '../context/useToast.js'
@@ -16,9 +16,7 @@ const statusTone = {
   Abgelehnt: 'risk',
 }
 
-function ApprovalDetailsModal({ approval, onApprove, onClose, onReject }) {
-  const isResolved = approval.status !== 'Offen'
-
+function ApprovalDetailsModal({ approval, onClose }) {
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
@@ -41,8 +39,8 @@ function ApprovalDetailsModal({ approval, onApprove, onClose, onReject }) {
       >
         <header className="modal__header">
           <div>
-            <span>Prüffall</span>
-            <h2 id="approval-modal-title">{approval.title}</h2>
+            <span>Drilldown</span>
+            <h2 id="approval-modal-title">Quellen & Protokoll</h2>
           </div>
           <StatusPill tone={riskTone[approval.riskLevel]}>
             Risiko: {approval.riskLevel}
@@ -50,44 +48,33 @@ function ApprovalDetailsModal({ approval, onApprove, onClose, onReject }) {
         </header>
         <div className="modal__body">
           <div>
-            <h3>Grund der Eskalation</h3>
-            <p>{approval.reason}</p>
-          </div>
-          <div>
-            <h3>KI-Empfehlung</h3>
-            <p>{approval.aiRecommendation}</p>
-          </div>
-          <div>
             <h3>Datenquelle</h3>
             <p>{approval.dataSource}</p>
           </div>
           <div>
-            <h3>Lieferant</h3>
-            <p>{approval.relatedSupplier}</p>
-          </div>
-          <div>
-            <h3>Material</h3>
-            <p>{approval.relatedMaterial}</p>
-          </div>
-          <div>
-            <h3>Vorgeschlagener Preis</h3>
-            <p>{approval.proposedPrice}</p>
-          </div>
-          <div>
-            <h3>Warum wurde dieser Fall eskaliert?</h3>
+            <h3>Kontextdaten</h3>
             <p>
-              Dieser Fall wurde eskaliert, weil definierte Governance-Regeln
-              überschritten wurden.
+              Lieferant: {approval.relatedSupplier} · Material: {approval.relatedMaterial} ·
+              Preis/Kontext: {approval.proposedPrice}
+            </p>
+          </div>
+          <div>
+            <h3>Governance-Auslöser</h3>
+            <p>
+              Ausgelöste Regel: {approval.title} · Risikostufe: {approval.riskLevel} ·
+              Status: {approval.status}
+            </p>
+          </div>
+          <div>
+            <h3>Protokollnotiz</h3>
+            <p>
+              Dieses Fenster zeigt nur Quellen- und Kontextinformationen. Die
+              finale Entscheidung wird im Hauptbereich der Freigabeseite
+              getroffen.
             </p>
           </div>
         </div>
         <footer className="modal__footer">
-          <button className="btn btn--success" disabled={isResolved} type="button" onClick={() => onApprove(approval)}>
-            Freigeben
-          </button>
-          <button className="btn btn--danger" disabled={isResolved} type="button" onClick={() => onReject(approval)}>
-            Ablehnen
-          </button>
           <button className="btn btn--ghost" type="button" onClick={onClose}>
             Schließen
           </button>
@@ -97,7 +84,130 @@ function ApprovalDetailsModal({ approval, onApprove, onClose, onReject }) {
   )
 }
 
+function DetailField({ label, value }) {
+  if (!value) {
+    return null
+  }
+
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  )
+}
+
+function ApprovalOverviewCard({ approval, isActive }) {
+  return (
+    <Link
+      aria-current={isActive ? 'page' : undefined}
+      className={`approval-overview-card ${isActive ? 'approval-overview-card--active' : ''}`}
+      to={`/freigaben/${approval.id}`}
+    >
+      <div>
+        <strong>{approval.title}</strong>
+        <small>{approval.id} · {approval.relatedSupplier}</small>
+      </div>
+      <div className="approval-overview-card__badges">
+        <StatusPill tone={riskTone[approval.riskLevel]}>
+          Risiko: {approval.riskLevel}
+        </StatusPill>
+        <StatusPill tone={statusTone[approval.status]}>{approval.status}</StatusPill>
+      </div>
+    </Link>
+  )
+}
+
+function ApprovalDetail({ approval, onApprove, onOpenModal, onReject }) {
+  const isResolved = approval.status !== 'Offen'
+
+  return (
+    <article className={`approval-detail panel ${isResolved ? 'approval-detail--resolved' : ''}`}>
+      <header className="approval-detail__header">
+        <div>
+          <span>{approval.id}</span>
+          <h2>{approval.title}</h2>
+          <p>{approval.relatedMaterial} · {approval.relatedSupplier}</p>
+        </div>
+        <div className="approval-detail__badges">
+          <StatusPill tone={riskTone[approval.riskLevel]}>
+            Risiko: {approval.riskLevel}
+          </StatusPill>
+          <StatusPill tone={statusTone[approval.status]}>{approval.status}</StatusPill>
+        </div>
+      </header>
+
+      <dl className="approval-detail__grid">
+        <DetailField label="Datenquelle" value={approval.dataSource} />
+        <DetailField label="Lieferant" value={approval.relatedSupplier} />
+        <DetailField label="Material" value={approval.relatedMaterial} />
+        <DetailField label="Preis / Kontext" value={approval.proposedPrice} />
+      </dl>
+
+      <div className="approval-detail__body">
+        <section>
+          <h3>Warum ist eine Freigabe erforderlich?</h3>
+          <p>{approval.reason}</p>
+        </section>
+        <section>
+          <h3>KI-Empfehlung</h3>
+          <p>{approval.aiRecommendation}</p>
+        </section>
+        <section>
+          <h3>Nächste Schritte</h3>
+          <p>
+            Datenquelle prüfen, Empfehlung bewerten und Entscheidung im
+            Einkauf dokumentieren.
+          </p>
+        </section>
+      </div>
+
+      <footer className="approval-detail__actions">
+        <button className="btn btn--ghost" type="button" onClick={() => onOpenModal(approval)}>
+          Quellen & Verlauf
+        </button>
+        <button className="btn btn--success" disabled={isResolved} type="button" onClick={() => onApprove(approval)}>
+          Freigeben
+        </button>
+        <button className="btn btn--danger" disabled={isResolved} type="button" onClick={() => onReject(approval)}>
+          Ablehnen
+        </button>
+        <Link className="btn btn--secondary" to="/bestellungen">
+          Bestellungen öffnen
+        </Link>
+      </footer>
+    </article>
+  )
+}
+
+function ApprovalFallback({ id }) {
+  return (
+    <article className="approval-detail approval-detail--empty panel">
+      <header className="approval-detail__header">
+        <div>
+          <span>{id ? `Vorgang ${id}` : 'Freigaben'}</span>
+          <h2>{id ? 'Vorgang nicht gefunden' : 'Bitte Vorgang auswählen'}</h2>
+          <p>
+            {id
+              ? 'Für diese Vorgangs-ID liegen im aktuellen Prototyp-State keine Freigabedaten vor.'
+              : 'Wählen Sie oben einen Freigabefall aus, um die Detailprüfung zu öffnen.'}
+          </p>
+        </div>
+      </header>
+      <footer className="approval-detail__actions">
+        <Link className="btn btn--primary" to="/freigaben">
+          Freigaben öffnen
+        </Link>
+        <Link className="btn btn--secondary" to="/dashboard">
+          Dashboard öffnen
+        </Link>
+      </footer>
+    </article>
+  )
+}
+
 function Freigaben() {
+  const { id } = useParams()
   const { showToast } = useToast()
   const {
     approvalCases,
@@ -105,6 +215,15 @@ function Freigaben() {
     selectedApproval,
     setSelectedApproval,
   } = useProcurement()
+
+  const fallbackApproval =
+    approvalCases.find((approval) => approval.status === 'Offen') || approvalCases[0] || null
+  const routeApproval = id
+    ? approvalCases.find((approval) => approval.id === id)
+    : null
+  const activeApproval = id ? routeApproval : fallbackApproval
+  const hasUnknownId = Boolean(id && !routeApproval)
+  const openApprovals = approvalCases.filter((approval) => approval.status === 'Offen')
 
   const handleApprove = (approval) => {
     resolveApproval(approval, 'approved')
@@ -129,67 +248,33 @@ function Freigaben() {
         </p>
       </div>
 
-      <section className="approval-layout">
-        <div>
-          <div className="approval-grid">
-            {approvalCases.map((approval) => {
-              const isResolved = approval.status !== 'Offen'
-
-              return (
-                <article className={`approval-card ${isResolved ? 'approval-card--resolved' : ''}`} key={approval.id}>
-                  <div>
-                    <h2>{approval.title}</h2>
-                    <div className="approval-card__badges">
-                      <StatusPill tone={riskTone[approval.riskLevel]}>
-                        Risiko: {approval.riskLevel}
-                      </StatusPill>
-                      <StatusPill tone={statusTone[approval.status]}>{approval.status}</StatusPill>
-                    </div>
-                  </div>
-                  <p>{approval.reason}</p>
-                  <dl>
-                    <div><dt>KI-Empfehlung</dt><dd>{approval.aiRecommendation}</dd></div>
-                    <div><dt>Datenquelle</dt><dd>{approval.dataSource}</dd></div>
-                    <div><dt>Lieferant</dt><dd>{approval.relatedSupplier}</dd></div>
-                    <div><dt>Material</dt><dd>{approval.relatedMaterial}</dd></div>
-                    <div><dt>Preis</dt><dd>{approval.proposedPrice}</dd></div>
-                  </dl>
-                  <div className="approval-card__actions">
-                    <button
-                      className="btn btn--ghost btn--small"
-                      type="button"
-                      onClick={() => setSelectedApproval(approval)}
-                    >
-                      Details prüfen
-                    </button>
-                    <button
-                      className="btn btn--success btn--small"
-                      disabled={isResolved}
-                      type="button"
-                      onClick={() => handleApprove(approval)}
-                    >
-                      Freigeben
-                    </button>
-                    <button
-                      className="btn btn--danger btn--small"
-                      disabled={isResolved}
-                      type="button"
-                      onClick={() => handleReject(approval)}
-                    >
-                      Ablehnen
-                    </button>
-                  </div>
-                </article>
-              )
-            })}
-          </div>
-
-          <div className="section-actions section-actions--standalone">
-            <Link className="btn btn--primary" to="/bestellungen">
-              Bestellungen öffnen
-            </Link>
-          </div>
+      <section className="approval-master panel">
+        <div className="section-header">
+          <h2>Prüffälle</h2>
+          <span>{approvalCases.length} Fälle · {openApprovals.length} offen</span>
         </div>
+        <div className="approval-master__list">
+          {approvalCases.map((approval) => (
+            <ApprovalOverviewCard
+              approval={approval}
+              isActive={activeApproval?.id === approval.id}
+              key={approval.id}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className="approval-detail-layout">
+        {hasUnknownId && <ApprovalFallback id={id} />}
+        {!hasUnknownId && activeApproval && (
+          <ApprovalDetail
+            approval={activeApproval}
+            onApprove={handleApprove}
+            onOpenModal={setSelectedApproval}
+            onReject={handleReject}
+          />
+        )}
+        {!hasUnknownId && !activeApproval && <ApprovalFallback />}
 
         <aside className="info-panel">
           <h2>Warum ist eine Freigabe erforderlich?</h2>
@@ -204,9 +289,7 @@ function Freigaben() {
       {selectedApproval && (
         <ApprovalDetailsModal
           approval={selectedApproval}
-          onApprove={handleApprove}
           onClose={() => setSelectedApproval(null)}
-          onReject={handleReject}
         />
       )}
     </section>
