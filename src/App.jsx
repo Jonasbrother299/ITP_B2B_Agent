@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import DataSourcesPage from './pages/settings/DataSourcesPage.jsx'
 import Freigaben from './pages/Freigaben.jsx'
 import Lieferantensuche from './pages/Lieferantensuche.jsx'
+import ProcurementProcessDetail from './pages/ProcurementProcessDetail.jsx'
 import RegelnGovernance from './pages/RegelnGovernance.jsx'
 import Reporting from './pages/Reporting.jsx'
 import RFQs from './pages/RFQs.jsx'
@@ -29,6 +30,7 @@ function App() {
               <Route path="/lieferantensuche" element={<Lieferantensuche />} />
               <Route path="/rfqs" element={<RFQs />} />
               <Route path="/angebotsvergleich" element={<Angebotsvergleich />} />
+              <Route path="/vorgänge/rfq-1024" element={<ProcurementProcessDetail />} />
               <Route path="/verhandlungen" element={<Verhandlungen />} />
               <Route path="/freigaben" element={<Freigaben />} />
               <Route path="/freigaben/:id" element={<Freigaben />} />

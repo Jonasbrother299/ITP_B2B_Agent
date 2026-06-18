@@ -135,7 +135,7 @@ function Dashboard() {
       tone: statusTone[rfq.status] || 'blue',
       nextStep: 'Angebotsvergleich',
       owner: 'RFQ Agent',
-      path: '/angebotsvergleich',
+      detailPath: rfq.id === 'RFQ-1024' ? '/vorgänge/rfq-1024' : null,
     })),
     ...(negotiationCase ? [{
       id: negotiationCase.rfqId,
