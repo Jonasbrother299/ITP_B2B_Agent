@@ -106,10 +106,6 @@ function RFQs() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: Angebotsvergleich starten
-      </div>
-
       <div className="basic-page__cards">
         <InfoCard title="Aktive RFQs" value={String(activeRFQs.length)} text="Versendet oder mit Angebotseingang." />
         <InfoCard title="Gespeicherte RFQ-Entwürfe" value={String(rfqDrafts.length)} text="Gespeicherte Anfragen vor Versand." />

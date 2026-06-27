@@ -138,10 +138,6 @@ function Bestellungen() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: ERP-Status der vorbereiteten Bestellungen prüfen
-      </div>
-
       <section className="basic-page__cards">
         {metrics.map((metric) => (
           <article className="info-card info-card--compact" key={metric.label}>

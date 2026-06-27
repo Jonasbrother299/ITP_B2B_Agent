@@ -157,10 +157,6 @@ function Lieferantensuche() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: passenden Lieferanten auswählen und RFQ vorbereiten
-      </div>
-
       <div className="basic-page__cards basic-page__cards--four">
         {metrics.map((metric) => (
           <InfoCard key={metric.title} title={metric.title} value={metric.value} text={metric.text} />

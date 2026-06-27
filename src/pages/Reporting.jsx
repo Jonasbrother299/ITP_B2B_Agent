@@ -95,10 +95,6 @@ function Reporting() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: Management-Report generieren
-      </div>
-
       <section className="basic-page__cards basic-page__cards--six">
         <InfoCard title="Aktive RFQs" value={String(activeRFQs.length)} text="versendet oder mit Angebotseingang" />
         <InfoCard title="RFQ-Entwürfe" value={String(rfqDrafts.length)} text="gespeicherte RFQ-Vorlagen" />

@@ -81,6 +81,13 @@
   }
 }
 
+.settings-page__summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
 .settings-page__section {
   margin-top: 18px;
   border: 1px solid var(--line);

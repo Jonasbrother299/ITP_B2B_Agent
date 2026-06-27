@@ -69,9 +69,6 @@ function DataSourcesPage() {
   return (
     <section className="basic-page settings-area">
       <SettingsHeader />
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: angebundene Quellen prüfen
-      </div>
       <DataSourceList />
     </section>
   )

@@ -93,10 +93,6 @@ function Angebotsvergleich() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: bevorzugtes Angebot prüfen und Verhandlung starten
-      </div>
-
       <section className="rfq-summary-card rfq-summary-card--select" aria-label="RFQ-Zusammenfassung">
         <label className="form-field">
           <span className="form-field__label">

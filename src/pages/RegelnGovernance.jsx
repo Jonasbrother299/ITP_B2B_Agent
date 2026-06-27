@@ -224,6 +224,7 @@ function RegelnGovernance() {
   const {
     agentAutonomyLevels,
     governanceSettings,
+    resetGovernanceSettings,
     updateAgentAutonomyLevel,
     updateGovernanceSetting,
   } = useProcurement()
@@ -263,7 +264,61 @@ function RegelnGovernance() {
     showToast('Agenten-Einstellungen gespeichert.')
   }
 
+  const resetRules = () => {
+    resetGovernanceSettings()
+    showToast('Governance-Regeln zurückgesetzt.')
+  }
+
   const activeEscalations = Object.values(escalationRules).filter(Boolean).length
+  const governanceRuleSettings = [
+    {
+      key: 'priceLimit',
+      label: 'Preisgrenze',
+      description: 'Maximaler Angebotswert, den KI-Agenten ohne zusätzliche Prüfung vorbereiten dürfen.',
+      max: 100000,
+      step: 1000,
+      suffix: '€',
+    },
+    {
+      key: 'approvalThreshold',
+      label: 'Freigabeschwelle',
+      description: 'Ab dieser Summe wird eine manuelle Freigabe im Einkauf erforderlich.',
+      max: 50000,
+      step: 500,
+      suffix: '€',
+    },
+    {
+      key: 'orderLimit',
+      label: 'Maximale Auftragssumme',
+      description: 'Begrenzt Bestellungen, die ohne zusätzliche Freigabe vorbereitet werden.',
+      max: 25000,
+      step: 500,
+      suffix: '€',
+    },
+    {
+      key: 'timeLimitDays',
+      label: 'Zeitlimit',
+      description: 'Maximale Prozessdauer, bevor ein Vorgang zur Beobachtung markiert wird.',
+      min: 1,
+      max: 30,
+      suffix: 'Tage',
+    },
+    {
+      key: 'negotiationDuration',
+      label: 'Maximale Laufzeit',
+      description: 'Begrenzt automatische Verhandlungen, bevor eine Eskalation erfolgt.',
+      min: 1,
+      max: 96,
+      suffix: 'h',
+    },
+    {
+      key: 'priceRange',
+      label: 'Eskalationsgrenze Preisabweichung',
+      description: 'Ab dieser Preisabweichung wird der Vorgang zur Prüfung eskaliert.',
+      max: 25,
+      suffix: '%',
+    },
+  ]
 
   return (
     <section className="settings-page">
@@ -280,70 +335,19 @@ function RegelnGovernance() {
         </p>
       </header>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: Regelgrenzen prüfen
-      </div>
-
       <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy">
-        <SettingCard
-          setting={{
-            label: 'Preisverhandlungsspielraum',
-            description: 'Legt fest, in welchem Rahmen der Negotiation Agent autonom verhandeln darf.',
-          }}
-          variant="numeric"
-        >
-          <NumericControl max={25} onChange={(value) => updateAutonomyLimit('priceRange', value)} suffix="%" value={autonomyLimits.priceRange} />
-        </SettingCard>
-
-        <SettingCard
-          setting={{
-            label: 'Maximale automatische Bestellsumme',
-            description: 'Begrenzt Bestellungen, die ohne zusätzliche Freigabe vorbereitet werden.',
-          }}
-          variant="numeric"
-        >
-          <NumericControl max={25000} onChange={(value) => updateAutonomyLimit('orderLimit', value)} step={500} suffix="€" value={autonomyLimits.orderLimit} />
-        </SettingCard>
-
-        <SettingCard
-          setting={{
-            label: 'Maximale Verhandlungsdauer',
-            description: 'Begrenzt automatische Verhandlungen, bevor eine Eskalation erfolgt.',
-          }}
-          variant="numeric"
-        >
-          <NumericControl max={96} min={1} onChange={(value) => updateAutonomyLimit('negotiationDuration', value)} suffix="h" value={autonomyLimits.negotiationDuration} />
-        </SettingCard>
-
-        <SettingCard
-          setting={{
-            label: 'Preisgrenze',
-            description: 'Maximaler Angebotswert, den KI-Agenten ohne zusätzliche Prüfung vorbereiten dürfen.',
-          }}
-          variant="numeric"
-        >
-          <NumericControl max={100000} onChange={(value) => updateAutonomyLimit('priceLimit', value)} step={1000} suffix="€" value={autonomyLimits.priceLimit} />
-        </SettingCard>
-
-        <SettingCard
-          setting={{
-            label: 'Zeitlimit',
-            description: 'Maximale Prozessdauer, bevor ein Vorgang zur Beobachtung markiert wird.',
-          }}
-          variant="numeric"
-        >
-          <NumericControl max={30} min={1} onChange={(value) => updateAutonomyLimit('timeLimitDays', value)} suffix="Tage" value={autonomyLimits.timeLimitDays} />
-        </SettingCard>
-
-        <SettingCard
-          setting={{
-            label: 'Freigabeschwelle',
-            description: 'Ab dieser Summe wird eine manuelle Freigabe im Einkauf erforderlich.',
-          }}
-          variant="numeric"
-        >
-          <NumericControl max={50000} onChange={(value) => updateAutonomyLimit('approvalThreshold', value)} step={500} suffix="€" value={autonomyLimits.approvalThreshold} />
-        </SettingCard>
+        {governanceRuleSettings.map((setting) => (
+          <SettingCard key={setting.key} setting={setting} variant="numeric">
+            <NumericControl
+              max={setting.max}
+              min={setting.min || 0}
+              onChange={(value) => updateAutonomyLimit(setting.key, value)}
+              step={setting.step || 1}
+              suffix={setting.suffix}
+              value={autonomyLimits[setting.key]}
+            />
+          </SettingCard>
+        ))}
 
         <SettingCard
           setting={{
@@ -419,8 +423,14 @@ function RegelnGovernance() {
         <p>Negotiation Agent darf bis ±{autonomyLimits.priceRange} % autonom verhandeln.</p>
         <p>Automatische Bestellungen sind bis {autonomyLimits.orderLimit.toLocaleString('de-DE')} € erlaubt.</p>
         <p>Preisgrenze: {autonomyLimits.priceLimit.toLocaleString('de-DE')} € · Freigabeschwelle: {autonomyLimits.approvalThreshold.toLocaleString('de-DE')} €.</p>
-        <p>Zeitlimit: {autonomyLimits.timeLimitDays} Tage · Risikoschwelle: {autonomyLimits.riskThreshold}.</p>
+        <p>Maximale Auftragssumme: {autonomyLimits.orderLimit.toLocaleString('de-DE')} € · maximale Laufzeit: {autonomyLimits.negotiationDuration} h.</p>
+        <p>Zeitlimit: {autonomyLimits.timeLimitDays} Tage · Risikoschwelle: {autonomyLimits.riskThreshold} · Eskalationsgrenze: ±{autonomyLimits.priceRange} %.</p>
         <p>{activeEscalations} aktive Eskalationsregeln leiten Freigaben an den Einkauf weiter.</p>
+        <div className="settings-page__summary-actions">
+          <button className="btn btn--secondary" type="button" onClick={resetRules}>
+            Regeln zurücksetzen
+          </button>
+        </div>
       </section>
     </section>
   )

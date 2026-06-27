@@ -93,10 +93,6 @@ function Verhandlungen() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: Gegenangebot vorbereiten oder Ergebnis zur Freigabe senden
-      </div>
-
       <section className="negotiation-summary-card">
         <div className="section-header">
           <h2>Verhandlungsfall</h2>

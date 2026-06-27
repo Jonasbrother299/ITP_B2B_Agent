@@ -392,10 +392,6 @@ function Dashboard() {
         ))}
       </section>
 
-      <div className="process-hint dashboard-next-step">
-        Ihr nächster sinnvoller Schritt: wichtigste offene Freigabe prüfen
-      </div>
-
       <div className="dashboard-process-stepper" aria-label="Procura Prozess">
         {[
           ['Bedarf erkannt', '/bedarfserkennung'],

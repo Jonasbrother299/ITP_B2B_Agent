@@ -646,6 +646,12 @@ export function ProcurementProvider({ children }) {
     addActivityLog('Governance-Einstellung aktualisiert')
   }
 
+  const resetGovernanceSettings = () => {
+    setGovernanceSettings(initialGovernanceSettings)
+    window.localStorage.removeItem('procura-governance-settings')
+    addActivityLog('Governance-Einstellungen wurden zurückgesetzt')
+  }
+
   const updateAgentAutonomyLevel = (agentName, level) => {
     setAgentAutonomyLevels((levels) => ({
       ...levels,
@@ -726,6 +732,7 @@ export function ProcurementProvider({ children }) {
     suppliers,
     supplierOffers,
     requestRfqForSupplier,
+    resetGovernanceSettings,
     selectSupplier,
     toggleSupplierComparison,
     updateAgentAutonomyLevel,

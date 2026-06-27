@@ -32,10 +32,6 @@ function Bedarfserkennung() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: kritischen Bedarf in eine RFQ überführen
-      </div>
-
       <div className="basic-page__cards">
         <InfoCard title="Erkannte Bedarfe" value={String(detectedNeeds.length)} text="Aus ERP, Planung und Forecasts konsolidiert." />
         <InfoCard title="Kritische Lagerbestände" value={String(criticalNeeds)} text="Bedarfe mit hoher Priorität." />

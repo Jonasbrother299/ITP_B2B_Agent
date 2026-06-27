@@ -75,6 +75,78 @@ function ProcessTimeline({ steps }) {
   )
 }
 
+function RecommendationReasoning({ activeOffer, decision, offers }) {
+  const alternatives = offers.filter((offer) => offer.id !== activeOffer.id)
+  const offerB = offers[1]
+
+  return (
+    <section className="approval-review-card approval-review-card--recommendation panel">
+      <div className="approval-review-card__header">
+        <div>
+          <span>KI-Empfehlung</span>
+          <h2>{activeOffer.recommended ? 'Angebot A bevorzugen' : 'Freigabe erforderlich'}</h2>
+        </div>
+        <StatusPill tone={activeOffer.recommended ? 'active' : 'warning'}>
+          Entscheidungsrelevant
+        </StatusPill>
+      </div>
+      <div className="ai-reasoning">
+        <article>
+          <h3>Empfehlung</h3>
+          <p>{decision.recommendation}</p>
+          <p>
+            Die KI priorisiert {activeOffer.supplier}, weil Preis, Lieferzeit, Risiko,
+            Qualität und Lieferantenhistorie im aktuellen Vorgang den stabilsten
+            Gesamtwert ergeben.
+          </p>
+        </article>
+        <article>
+          <h3>Begründung</h3>
+          <p>
+            Der aktuelle Preis liegt bei {activeOffer.currentPrice}; die Abweichung zum
+            Zielpreis beträgt {activeOffer.targetDeviation}. Die Lieferzeit von
+            {` ${activeOffer.deliveryTime}`} ist für den Bedarf planbar, das Risiko ist
+            als {activeOffer.risk} eingestuft und die Qualitätsbewertung liegt bei
+            {` ${activeOffer.quality}`}. Zusätzlich stützt die Historie die Empfehlung:
+            {` ${activeOffer.history}`}
+          </p>
+        </article>
+        <article>
+          <h3>Governance-Kontext</h3>
+          <p>
+            Die Empfehlung bleibt prüfpflichtig, sobald Preisabweichungen,
+            Risikoschwellen oder Vertragsbedingungen außerhalb der freigegebenen
+            Leitplanken liegen. Deshalb wird die Entscheidung hier im Einkauf
+            geprüft statt automatisch abgeschlossen.
+          </p>
+        </article>
+        {offerB && (
+          <article>
+            <h3>Warum nicht Angebot B?</h3>
+            <p>
+              {offerB.supplier} wird nicht bevorzugt: {offerB.whyNot} Im Vergleich
+              zu {activeOffer.supplier} sind Preisabweichung, Lieferzeit,
+              Risiko- oder Konditionsprofil für diesen Vorgang weniger belastbar.
+            </p>
+          </article>
+        )}
+        {alternatives.length > 0 && (
+          <article className="ai-reasoning__wide">
+            <h3>Weitere Optionen</h3>
+            <ul>
+              {alternatives.map((offer) => (
+                <li key={offer.id}>
+                  <strong>{offer.supplier}:</strong> {offer.whyNot}
+                </li>
+              ))}
+            </ul>
+          </article>
+        )}
+      </div>
+    </section>
+  )
+}
+
 function VorgangDetail() {
   const { id } = useParams()
   const { approvalCases, getProcurementCase, resolveApproval } = useProcurement()
@@ -186,6 +258,12 @@ function VorgangDetail() {
               </div>
             </div>
           </section>
+
+          <RecommendationReasoning
+            activeOffer={activeOffer}
+            decision={procurementCase.decision}
+            offers={procurementCase.offers}
+          />
 
           <section className="approval-review-card panel">
             <div className="approval-review-card__header">

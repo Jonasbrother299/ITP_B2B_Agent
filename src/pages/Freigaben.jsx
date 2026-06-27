@@ -41,10 +41,6 @@ function Freigaben() {
         </p>
       </div>
 
-      <div className="process-hint">
-        Ihr nächster sinnvoller Schritt: wichtigste offene Freigabe prüfen
-      </div>
-
       <section className="panel basic-page__section">
         <div className="section-header">
           <h2>Prüffall auswählen</h2>
