@@ -31,9 +31,6 @@ function Topbar() {
         <button className="btn btn--ghost topbar__icon-button" type="button" aria-label="Theme wechseln" onClick={toggleTheme}>
           {theme === 'dark' ? '☾' : '☼'}
         </button>
-        <button className="btn btn--ghost topbar__icon-button" type="button" aria-label="Benachrichtigungen">
-          ○
-        </button>
         <button
           className="btn btn--ghost topbar__profile-trigger"
           type="button"
