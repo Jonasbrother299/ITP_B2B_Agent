@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import ActionMenu from '../components/ActionMenu.jsx'
 import InfoCard from '../components/cards/InfoCard.jsx'
 import StatusPill from '../components/StatusPill.jsx'
 import { useProcurement } from '../context/useProcurement.js'
@@ -29,6 +30,10 @@ function Bedarfserkennung() {
           Automatische Erkennung von Beschaffungsbedarfen aus Bestandsdaten,
           Planung, offenen Bestellungen und Prognosen.
         </p>
+      </div>
+
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: kritischen Bedarf in eine RFQ überführen
       </div>
 
       <div className="basic-page__cards">
@@ -73,13 +78,15 @@ function Bedarfserkennung() {
                     </StatusPill>
                   </td>
                   <td>
-                    <button
-                      className="btn btn--primary btn--small"
-                      type="button"
-                      onClick={() => handleCreateRfq(need)}
-                    >
-                      RFQ erstellen
-                    </button>
+                    <ActionMenu
+                      actions={[
+                        { label: 'Öffnen', disabled: true },
+                        { label: 'Prüfen', disabled: true },
+                        { label: 'Freigeben', disabled: true },
+                        { label: 'Nachricht senden', disabled: true },
+                        { label: 'RFQ erstellen', onClick: () => handleCreateRfq(need) },
+                      ]}
+                    />
                   </td>
                 </tr>
               ))}

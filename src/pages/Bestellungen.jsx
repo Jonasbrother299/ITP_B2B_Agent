@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import ActionMenu from '../components/ActionMenu.jsx'
 import StatusPill from '../components/StatusPill.jsx'
 import { useProcurement } from '../context/useProcurement.js'
 import { useToast } from '../context/useToast.js'
@@ -137,6 +138,10 @@ function Bestellungen() {
         </p>
       </div>
 
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: ERP-Status der vorbereiteten Bestellungen prüfen
+      </div>
+
       <section className="basic-page__cards">
         {metrics.map((metric) => (
           <article className="info-card info-card--compact" key={metric.label}>
@@ -177,9 +182,15 @@ function Bestellungen() {
                   <td>{order.deliveryDate}</td>
                   <td><StatusPill tone={riskTone[order.risk]}>{order.risk}</StatusPill></td>
                   <td>
-                    <button className="btn btn--secondary btn--small" type="button" onClick={() => setSelectedOrder(order)}>
-                      Lieferstatus prüfen
-                    </button>
+                    <ActionMenu
+                      actions={[
+                        { label: 'Öffnen', to: `/vorgaenge/${order.orderId}` },
+                        { label: 'Prüfen', to: `/vorgaenge/${order.orderId}` },
+                        { label: 'Freigeben', disabled: true },
+                        { label: 'Nachricht senden', disabled: true },
+                        { label: 'Lieferstatus prüfen', onClick: () => setSelectedOrder(order) },
+                      ]}
+                    />
                   </td>
                 </tr>
               ))}

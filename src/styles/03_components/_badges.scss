@@ -17,14 +17,14 @@
 .status-pill--active,
 .status-pill--success {
   border-color: rgba(34, 197, 94, 0.22);
-  color: #69e99a;
+  color: var(--success);
   background: rgba(34, 197, 94, 0.14);
 }
 
 .badge--warning,
 .status-pill--warning {
   border-color: rgba(245, 158, 11, 0.24);
-  color: #f8be58;
+  color: var(--warning);
   background: rgba(245, 158, 11, 0.14);
 }
 
@@ -32,7 +32,7 @@
 .status-pill--risk,
 .status-pill--danger {
   border-color: rgba(239, 68, 68, 0.24);
-  color: #ff918a;
+  color: var(--danger);
   background: rgba(239, 68, 68, 0.14);
 }
 
@@ -40,19 +40,13 @@
 .status-pill--blue,
 .status-pill--info {
   border-color: rgba(79, 124, 255, 0.24);
-  color: #91adff;
+  color: var(--primary);
   background: rgba(79, 124, 255, 0.15);
 }
 
 .badge--neutral,
 .status-pill--neutral {
   border-color: rgba(148, 163, 184, 0.16);
-  color: #a4adbb;
+  color: var(--muted-strong);
   background: rgba(148, 163, 184, 0.1);
-}
-
-.status-pill--purple {
-  border-color: rgba(155, 92, 255, 0.25);
-  color: #c7a2ff;
-  background: rgba(155, 92, 255, 0.16);
 }

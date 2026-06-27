@@ -16,8 +16,8 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   padding: 0 14px;
-  color: #d5dce8;
-  background: linear-gradient(180deg, #171d27, #111720);
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--panel-soft), var(--panel));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   font-size: 13px;
   font-weight: 850;
@@ -32,8 +32,8 @@
 
   &:hover {
     border-color: rgba(79, 124, 255, 0.36);
-    color: #f3f7ff;
-    background: linear-gradient(180deg, #1b2432, #141c28);
+    color: var(--ink);
+    background: var(--surface-hover);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
     transform: translateY(-1px);
   }
@@ -62,14 +62,15 @@
 .hero-panel__actions a:first-child,
 .prototype-form__actions button:last-child,
 .report-card button {
-  border-color: rgba(91, 108, 255, 0.52);
+  border-color: rgba(79, 124, 255, 0.52);
   color: #ffffff;
-  background: linear-gradient(135deg, #5368ff, #6b5cff);
-  box-shadow: 0 12px 26px rgba(83, 104, 255, 0.22);
+  background: linear-gradient(135deg, var(--primary), var(--info));
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.22);
 
   &:hover {
-    border-color: rgba(126, 145, 255, 0.72);
-    background: linear-gradient(135deg, #6075ff, #7869ff);
+    border-color: rgba(96, 165, 250, 0.72);
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--primary-hover), var(--info));
   }
 }
 
@@ -77,30 +78,30 @@
 .button-link,
 .table-action {
   border-color: rgba(79, 124, 255, 0.24);
-  color: #c9d6ff;
-  background: rgba(79, 124, 255, 0.12);
+  color: var(--primary);
+  background: var(--info-soft);
 }
 
 .btn--ghost,
 .decision-card__actions a:last-child,
 .topbar__icon-button,
 .profile-drawer__close {
-  color: #8f9bad;
-  background: rgba(20, 24, 33, 0.82);
+  color: var(--muted-strong);
+  background: color-mix(in srgb, var(--panel-soft) 84%, transparent);
 }
 
 .btn--danger,
 .approval-card__actions button:nth-child(2) {
   border-color: rgba(239, 68, 68, 0.28);
-  color: #fecaca;
-  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+  background: var(--danger-soft);
 }
 
 .btn--success,
 .approval-card__actions button:first-child {
   border-color: rgba(34, 197, 94, 0.3);
-  color: #bbf7d0;
-  background: rgba(34, 197, 94, 0.14);
+  color: var(--success);
+  background: var(--success-soft);
 }
 
 .btn--small,
@@ -167,5 +168,75 @@
     border-color: rgba(148, 163, 184, 0.16);
     background: rgba(255, 255, 255, 0.04);
     transform: none;
+  }
+}
+
+[data-theme="light"] {
+  .btn,
+  .button-link,
+  .table-action,
+  .topbar__icon-button,
+  .profile-drawer__close {
+    border-color: var(--border);
+    color: var(--ink);
+    background: var(--panel);
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+
+    &:hover {
+      border-color: var(--border-strong);
+      color: var(--ink);
+      background: var(--surface-hover);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+  }
+
+  .btn--primary,
+  .button-link--primary,
+  .hero-panel__actions a:first-child,
+  .prototype-form__actions button:last-child,
+  .report-card button {
+    border-color: rgba(37, 99, 235, 0.42);
+    color: #ffffff;
+    background: linear-gradient(135deg, var(--primary), var(--info));
+
+    &:hover {
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--primary-hover), var(--info));
+    }
+  }
+
+  .btn--secondary,
+  .button-link,
+  .table-action {
+    border-color: rgba(37, 99, 235, 0.28);
+    color: var(--primary);
+    background: var(--info-soft);
+  }
+
+  .btn--ghost,
+  .decision-card__actions a:last-child,
+  .topbar__icon-button,
+  .profile-drawer__close {
+    color: var(--muted-strong);
+    background: var(--surface-muted);
+  }
+
+  .btn--success,
+  .approval-card__actions button:first-child {
+    border-color: rgba(22, 163, 74, 0.32);
+    color: var(--success);
+    background: var(--success-soft);
+  }
+
+  .btn--danger,
+  .approval-card__actions button:nth-child(2) {
+    border-color: rgba(220, 38, 38, 0.28);
+    color: var(--danger);
+    background: var(--danger-soft);
+  }
+
+  .hero-panel__actions a:last-child {
+    color: var(--warning);
+    background: var(--warning-soft);
   }
 }

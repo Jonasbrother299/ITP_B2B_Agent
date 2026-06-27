@@ -1,16 +1,27 @@
 import { NavLink } from 'react-router-dom'
+import { useUi } from '../../context/useUi.js'
 import { settingsDataSources, settingsNavigationItems } from '../../data/settingsData.js'
 
-function DataSourceItem({ source }) {
+function DataSourceItem({ onOpen, source }) {
   return (
-    <div className="data-source-row">
+    <button className="data-source-row data-source-row--button" type="button" onClick={() => onOpen(source)}>
       <span>{source.name}</span>
       <strong>{source.status}</strong>
-    </div>
+    </button>
   )
 }
 
 function DataSourceList() {
+  const { openSourceDrawer } = useUi()
+  const openDataSource = (source) => {
+    openSourceDrawer({
+      title: source.name,
+      type: 'Datenquelle',
+      content: `${source.name} ist mit Procura verbunden und wird für Bedarfserkennung, Sourcing, Verhandlung und Reporting verwendet.`,
+      preview: source.status,
+    })
+  }
+
   return (
     <section className="settings-card">
       <div className="section-header">
@@ -19,7 +30,7 @@ function DataSourceList() {
       </div>
       <div className="settings-data-source-list">
         {settingsDataSources.map((source) => (
-          <DataSourceItem key={source.name} source={source} />
+          <DataSourceItem key={source.name} onOpen={openDataSource} source={source} />
         ))}
       </div>
     </section>
@@ -58,6 +69,9 @@ function DataSourcesPage() {
   return (
     <section className="basic-page settings-area">
       <SettingsHeader />
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: angebundene Quellen prüfen
+      </div>
       <DataSourceList />
     </section>
   )

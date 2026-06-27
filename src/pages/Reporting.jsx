@@ -87,12 +87,16 @@ function Reporting() {
   return (
     <section className="basic-page">
       <div className="basic-page__hero">
-        <span>Procurement Intelligence</span>
+        <span>Procura Intelligence</span>
         <h1>Reporting</h1>
         <p>
           Visualisierung von Einkaufskennzahlen, Einsparpotenzialen, Risiken und
           Lieferantenperformance auf Basis des aktuellen Prototyp-Zustands.
         </p>
+      </div>
+
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: Management-Report generieren
       </div>
 
       <section className="basic-page__cards basic-page__cards--six">

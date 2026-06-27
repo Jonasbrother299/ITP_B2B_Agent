@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ProcurementContext } from './procurementContext.js'
 import { demoRFQ } from './procurementDemoData.js'
 
@@ -102,6 +102,61 @@ const initialNegotiationTimeline = [
   'RFQ ausgewählt.',
   'Initialangebot eingegangen.',
   'Negotiation Agent hat Gegenangebot vorbereitet.',
+]
+
+const centralOfferComparison = [
+  {
+    id: 'offer-northline',
+    supplier: 'Northline Supply',
+    startPrice: '47.600 €',
+    currentPrice: '45.200 €',
+    targetDeviation: '+6,0 %',
+    deliveryTime: '9 Tage',
+    risk: 'Niedrig',
+    quality: '94/100',
+    history: 'Stabile Lieferleistung, 98 % Termintreue',
+    aiReason: 'Bester Gesamtwert aus Preis, Lieferzeit und Risiko.',
+    whyNot: 'Nicht abgelehnt; als Referenzangebot für Freigabe geeignet.',
+    paymentTerms: '30 Tage netto',
+    negotiationHistory: [
+      'Initialangebot bei 47.600 € eingegangen',
+      'Negotiation Agent hat Gegenangebot vorbereitet',
+      'Lieferant senkt Preis auf 45.200 €',
+    ],
+    recommended: true,
+  },
+  {
+    id: 'offer-mueller',
+    supplier: 'Müller Industriebedarf',
+    startPrice: '49.800 €',
+    currentPrice: '43.900 €',
+    targetDeviation: '+12,4 %',
+    deliveryTime: '12 Tage',
+    risk: 'Mittel',
+    quality: '88/100',
+    history: 'Bestehender Lieferant, zuletzt zwei Preisabweichungen.',
+    aiReason: 'Solide Option, aber Preisabweichung überschreitet die Grenze.',
+    whyNot: 'Nicht bevorzugt, weil Preisabweichung und Lieferzeit höher sind.',
+    paymentTerms: '14 Tage netto',
+    negotiationHistory: [],
+    recommended: false,
+  },
+  {
+    id: 'offer-sensortech',
+    supplier: 'SensorTech AG',
+    startPrice: '52.400 €',
+    currentPrice: '48.700 €',
+    targetDeviation: '+24,7 %',
+    deliveryTime: '7 Tage',
+    risk: 'Niedrig',
+    quality: '91/100',
+    history: 'Schnelle Lieferung, aber eingeschränkte Zahlungsbedingungen.',
+    aiReason: 'Schnellste Lieferung, aber Preis und Konditionen sind schwächer.',
+    whyNot: 'Nicht empfohlen, weil Vorkasse und höchster Preis den Vorteil überwiegen.',
+    paymentTerms: 'Vorkasse',
+    negotiationHistory: [],
+    recommended: false,
+  },
 ]
 
 const initialApprovalCases = [
@@ -227,6 +282,10 @@ const initialGovernanceSettings = {
     priceRange: 10,
     orderLimit: 5000,
     negotiationDuration: 48,
+    priceLimit: 10000,
+    approvalThreshold: 5000,
+    timeLimitDays: 7,
+    riskThreshold: 'mittel',
   },
   escalationRules: {
     priceDeviation: true,
@@ -239,6 +298,35 @@ const initialGovernanceSettings = {
     showDataSources: true,
     auditLog: true,
   },
+}
+
+const readSavedGovernanceSettings = () => {
+  try {
+    const savedSettings = window.localStorage.getItem('procura-governance-settings')
+    if (!savedSettings) {
+      return initialGovernanceSettings
+    }
+
+    const parsedSettings = JSON.parse(savedSettings)
+    return {
+      ...initialGovernanceSettings,
+      ...parsedSettings,
+      autonomyLimits: {
+        ...initialGovernanceSettings.autonomyLimits,
+        ...parsedSettings.autonomyLimits,
+      },
+      escalationRules: {
+        ...initialGovernanceSettings.escalationRules,
+        ...parsedSettings.escalationRules,
+      },
+      compliance: {
+        ...initialGovernanceSettings.compliance,
+        ...parsedSettings.compliance,
+      },
+    }
+  } catch {
+    return initialGovernanceSettings
+  }
 }
 
 const initialAgentAutonomyLevels = {
@@ -269,6 +357,152 @@ const createNegotiationCase = (offer, rfq = demoRFQ) => ({
 
 const mapApprovalRiskToOrderRisk = (riskLevel) => (riskLevel === 'Hoch' ? 'hoch' : 'mittel')
 
+const createProcessSteps = (status = 'Offen') => [
+  {
+    id: 'demand',
+    title: 'Bedarf erkannt',
+    description: 'Bedarf aus Bestand, Planung und Prognose erkannt.',
+    status: 'abgeschlossen',
+    time: 'vor 3 Tagen',
+  },
+  {
+    id: 'rfq',
+    title: 'Lieferanten angefragt',
+    description: 'RFQ an passende Lieferanten versendet.',
+    status: 'abgeschlossen',
+    time: 'vor 2 Tagen',
+  },
+  {
+    id: 'offers',
+    title: 'Angebote erhalten',
+    description: '3 Angebote eingegangen und normalisiert.',
+    status: 'abgeschlossen',
+    time: 'vor 1 Tag',
+  },
+  {
+    id: 'negotiation',
+    title: 'KI-Vorverhandlung abgeschlossen',
+    description: 'Preise und Konditionen wurden innerhalb der Regeln verhandelt.',
+    status: 'abgeschlossen',
+    time: 'vor 4 Stunden',
+  },
+  {
+    id: 'review',
+    title: status === 'Offen' ? 'Menschliche Prüfung erforderlich' : 'Entscheidung dokumentiert',
+    description: status === 'Offen' ? 'Preisabweichung über Freigabegrenze.' : `Status wurde auf ${status} gesetzt.`,
+    status: status === 'Offen' ? 'aktuell' : 'abgeschlossen',
+    time: status === 'Offen' ? 'vor 3 Minuten' : 'gerade eben',
+  },
+  {
+    id: 'order',
+    title: 'Bestellung vorbereiten',
+    description: 'Bestellung und ERP-Übergabe nach Entscheidung vorbereiten.',
+    status: status === 'Freigegeben' ? 'aktuell' : 'ausstehend',
+    time: status === 'Freigegeben' ? 'nächster Schritt' : 'ausstehend',
+  },
+]
+
+const createApprovalCaseDetail = (approval) => ({
+  id: approval.id,
+  type: 'approval',
+  title: `Vorgang: ${approval.relatedMaterial}`,
+  status: approval.status === 'Offen' ? 'Prüfung erforderlich' : approval.status,
+  updatedAt: 'vor 3 Minuten',
+  material: approval.relatedMaterial,
+  supplier: approval.relatedSupplier,
+  rfqId: approval.dataSource.includes('RFQ') ? approval.dataSource.split(' · ')[0] : 'RFQ-1024',
+  riskLevel: approval.riskLevel,
+  decision: {
+    title: approval.title,
+    reason: approval.reason,
+    recommendation: approval.aiRecommendation,
+    context: `${approval.relatedSupplier} · ${approval.proposedPrice}`,
+  },
+  offers: centralOfferComparison,
+  selectedOfferId: centralOfferComparison[0].id,
+  processSteps: createProcessSteps(approval.status),
+  sources: [
+    {
+      title: approval.dataSource,
+      type: approval.dataSource.includes('RFQ') ? 'RFQ-Daten' : 'Datenquelle',
+      content: `Kontext zu ${approval.relatedMaterial} und ${approval.relatedSupplier}.`,
+      preview: approval.reason,
+    },
+    {
+      title: 'Lieferantenhistorie',
+      type: 'Lieferantenhistorie',
+      content: `Historische Performance und Risikobewertung für ${approval.relatedSupplier}.`,
+      preview: approval.aiRecommendation,
+    },
+  ],
+  history: [
+    `${approval.dataSource} geladen`,
+    'Governance-Regel geprüft',
+    'KI-Empfehlung erzeugt',
+    'Fall an Einkauf übergeben',
+  ],
+})
+
+const createRfqCaseDetail = (rfq) => ({
+  id: rfq.id,
+  type: 'rfq',
+  title: `Vorgang: ${rfq.material || 'RFQ'}`,
+  status: rfq.status,
+  updatedAt: 'heute',
+  material: rfq.material,
+  supplier: rfq.suppliers,
+  rfqId: rfq.id,
+  riskLevel: 'Mittel',
+  decision: {
+    title: 'Angebote bewerten',
+    reason: 'RFQ wartet auf Angebotsbewertung und mögliche Freigabe.',
+    recommendation: 'Angebotsvergleich starten und empfohlene Option prüfen.',
+    context: `${rfq.quantity || 'Menge offen'} · ${rfq.deadline || 'Frist offen'}`,
+  },
+  offers: centralOfferComparison,
+  selectedOfferId: centralOfferComparison[0].id,
+  processSteps: createProcessSteps('Offen'),
+  sources: [
+    {
+      title: rfq.id,
+      type: 'RFQ-Daten',
+      content: `Anfrage für ${rfq.material}.`,
+      preview: `Lieferanten: ${rfq.suppliers}`,
+    },
+  ],
+  history: ['RFQ erstellt', 'Lieferanten ausgewählt', 'Angebote erwartet'],
+})
+
+const createOrderCaseDetail = (order) => ({
+  id: order.orderId,
+  type: 'order',
+  title: `Vorgang: ${order.material}`,
+  status: order.status,
+  updatedAt: order.deliveryDate,
+  material: order.material,
+  supplier: order.supplier,
+  rfqId: order.approvalId || 'RFQ-1024',
+  riskLevel: order.risk === 'hoch' ? 'Hoch' : order.risk === 'mittel' ? 'Mittel' : 'Niedrig',
+  decision: {
+    title: 'Bestellstatus prüfen',
+    reason: 'Bestellung muss für ERP-Übergabe und Lieferstatus nachverfolgt werden.',
+    recommendation: 'ERP-Status prüfen und Lieferbestätigung überwachen.',
+    context: `${order.price} · Liefertermin ${order.deliveryDate}`,
+  },
+  offers: centralOfferComparison,
+  selectedOfferId: centralOfferComparison[0].id,
+  processSteps: createProcessSteps(order.status === 'ERP-Übergabe erfolgt' ? 'Freigegeben' : 'Offen'),
+  sources: [
+    {
+      title: order.orderId,
+      type: 'ERP-Daten',
+      content: `Bestellstatus für ${order.material}.`,
+      preview: order.status,
+    },
+  ],
+  history: ['Bestellung vorbereitet', order.status],
+})
+
 export function ProcurementProvider({ children }) {
   const [detectedNeeds, setDetectedNeeds] = useState(initialNeeds)
   const [rfqDrafts, setRfqDrafts] = useState([])
@@ -287,9 +521,13 @@ export function ProcurementProvider({ children }) {
   const [selectedSupplier, setSelectedSupplier] = useState(null)
   const [selectedSuppliersForComparison, setSelectedSuppliersForComparison] = useState([])
   const [selectedSupplierForRFQ, setSelectedSupplierForRFQ] = useState(null)
-  const [governanceSettings, setGovernanceSettings] = useState(initialGovernanceSettings)
+  const [governanceSettings, setGovernanceSettings] = useState(readSavedGovernanceSettings)
   const [agentAutonomyLevels, setAgentAutonomyLevels] = useState(initialAgentAutonomyLevels)
   const [activityLog, setActivityLog] = useState(initialActivityLog)
+
+  useEffect(() => {
+    window.localStorage.setItem('procura-governance-settings', JSON.stringify(governanceSettings))
+  }, [governanceSettings])
 
   const addActivityLog = (message) => {
     setActivityLog((entries) => [message, ...entries].slice(0, 8))
@@ -439,6 +677,13 @@ export function ProcurementProvider({ children }) {
   }
 
   const resolvedApprovals = approvalCases.filter((approval) => approval.status !== 'Offen')
+  const procurementCases = [
+    ...approvalCases.map(createApprovalCaseDetail),
+    ...activeRFQs.map(createRfqCaseDetail),
+    ...orders.map(createOrderCaseDetail),
+  ]
+  const getProcurementCase = (caseId) =>
+    procurementCases.find((procurementCase) => procurementCase.id === caseId) || null
 
   const value = {
     activeRFQs,
@@ -453,6 +698,7 @@ export function ProcurementProvider({ children }) {
     negotiationTimeline,
     orders,
     prepareNeedForRfq,
+    procurementCases,
     resolvedApprovals,
     resolveApproval,
     rfqDrafts,
@@ -486,6 +732,7 @@ export function ProcurementProvider({ children }) {
     updateGovernanceSetting,
     updateNegotiationCase,
     updateOrderStatus,
+    getProcurementCase,
   }
 
   return (

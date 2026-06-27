@@ -15,7 +15,7 @@
   border-color: rgba(148, 163, 184, 0.14);
   background:
     radial-gradient(circle at 90% 0%, rgba(79, 124, 255, 0.06), transparent 34%),
-    #12161c;
+    var(--panel);
   box-shadow: var(--shadow-soft);
   transition:
     border-color var(--transition-ui),
@@ -27,7 +27,7 @@
     display: block;
     max-width: 150px;
     min-height: 34px;
-    color: #7d8798;
+    color: var(--muted);
     font-size: 12px;
     font-weight: 800;
     line-height: 1.18;
@@ -36,7 +36,7 @@
   strong {
     display: block;
     margin-top: 10px;
-    color: #eef2f8;
+    color: var(--ink);
     font-size: 34px;
     line-height: 1;
   }
@@ -49,7 +49,7 @@
   }
 
   em {
-    color: #8b95a6;
+    color: var(--muted-strong);
     font-size: 12px;
     font-style: normal;
     font-weight: 700;
@@ -60,7 +60,7 @@
     display: block;
     height: 3px;
     border-radius: 999px;
-    background: #202631;
+    background: var(--panel-muted);
     overflow: hidden;
 
     i {
@@ -84,7 +84,7 @@
 
   &:hover {
     border-color: rgba(79, 124, 255, 0.42);
-    background: #151b24;
+    background: var(--surface-hover);
     box-shadow: var(--shadow-lift);
     transform: translateY(-2px);
   }
@@ -122,10 +122,6 @@
   background: var(--red);
 }
 
-.metric-card--purple small i {
-  background: var(--purple);
-}
-
 .info-card {
   min-width: 0;
   min-height: 170px;
@@ -133,7 +129,7 @@
   border-color: rgba(148, 163, 184, 0.14);
   background:
     radial-gradient(circle at 88% 0%, rgba(79, 124, 255, 0.05), transparent 34%),
-    #12161c;
+    var(--panel);
   box-shadow: var(--shadow-soft);
   transition:
     border-color var(--transition-ui),
@@ -161,6 +157,7 @@
   h2 {
     margin: 22px 0 10px;
     color: #eef2f8;
+    color: var(--ink);
     font-size: 18px;
     line-height: 1.25;
     min-width: 0;
@@ -171,13 +168,14 @@
     display: block;
     margin: 0 0 10px;
     color: #eef2f8;
+    color: var(--ink);
     font-size: 32px;
     line-height: 1;
   }
 
   p {
     margin: 0;
-    color: #8791a1;
+    color: var(--muted);
     font-size: 13px;
     line-height: 1.55;
     min-width: 0;

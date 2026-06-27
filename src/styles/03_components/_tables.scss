@@ -21,8 +21,8 @@ th {
   position: sticky;
   top: 0;
   z-index: 1;
-  color: #7d8798;
-  background: rgba(14, 18, 25, 0.96);
+  color: var(--muted-strong);
+  background: color-mix(in srgb, var(--panel) 94%, var(--panel-soft));
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.06em;
@@ -30,11 +30,11 @@ th {
 }
 
 td {
-  color: #9aa4b2;
+  color: var(--muted-strong);
   font-size: 13px;
 
   strong {
-    color: #d2dae7;
+    color: var(--ink);
   }
 }
 
@@ -44,7 +44,7 @@ tbody tr {
     box-shadow var(--transition-fast);
 
   &:nth-child(even) {
-    background: rgba(255, 255, 255, 0.008);
+    background: color-mix(in srgb, var(--panel-soft) 34%, transparent);
   }
 
   &:hover {

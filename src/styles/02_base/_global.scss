@@ -42,6 +42,142 @@ option,
   overflow: hidden;
 }
 
+[data-theme="light"] {
+  color-scheme: light;
+
+  body,
+  .dashboard {
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  .sidebar,
+  .topbar,
+  .hero-panel,
+  .basic-page__hero,
+  .panel,
+  .metric-card,
+  .info-card,
+  .offer-card,
+  .approval-card,
+  .recommendation-box,
+  .report-card,
+  .rfq-summary-card,
+  .negotiation-summary-card,
+  .approval-review-header,
+  .approval-review-card,
+  .approval-sidebar-card,
+  .settings-page__header,
+  .settings-page__section,
+  .settings-page__card,
+  .settings-page__agent-card,
+  .settings-page__summary,
+  .settings-header,
+  .settings-card,
+  .supplier-comparison-panel,
+  .report-preview,
+  .modal,
+  .side-drawer__panel {
+    color: var(--ink);
+    background: var(--panel) !important;
+    box-shadow: var(--shadow-soft);
+  }
+
+  h1,
+  h2,
+  h3,
+  strong,
+  td strong,
+  .sidebar__brand strong,
+    .topbar__profile strong {
+    color: var(--ink) !important;
+  }
+
+  p,
+  span,
+  small,
+  dt,
+  td,
+  .sidebar__section,
+  .topbar__breadcrumb,
+  .activity-list li,
+    .timeline-list li {
+    color: var(--muted);
+  }
+
+  th {
+    color: var(--muted-strong);
+    background: var(--panel-soft);
+  }
+
+  .form-field__input,
+  .form-field__textarea,
+  .form-field__select,
+  .prototype-form input,
+  .prototype-form textarea,
+  .settings-page__select,
+  .topbar__search input {
+    color: var(--ink);
+    background: var(--panel);
+  }
+
+  .btn--primary {
+    color: #ffffff;
+  }
+
+  .sidebar__link {
+    color: var(--muted);
+
+    &:hover,
+    &--active {
+      color: var(--ink);
+      background: rgba(79, 124, 255, 0.1);
+    }
+  }
+
+  .sidebar__icon {
+    color: var(--muted);
+  }
+
+  .topbar__avatar {
+    color: var(--ink);
+    background: var(--panel-muted);
+  }
+
+  .setting-control__value input {
+    color: var(--ink);
+  }
+
+  .status-pill--active,
+  .status-pill--success,
+  .badge--success {
+    color: var(--success);
+  }
+
+  .status-pill--warning,
+  .badge--warning {
+    color: var(--warning);
+  }
+
+  .status-pill--risk,
+  .status-pill--danger,
+  .badge--danger {
+    color: var(--danger);
+  }
+
+  .status-pill--blue,
+  .status-pill--info,
+  .badge--info {
+    color: var(--primary);
+  }
+
+  .status-pill--neutral,
+  .badge--neutral {
+    color: var(--muted-strong);
+  }
+
+}
+
 @media (max-width: 1320px) {
   body {
     min-width: 1024px;

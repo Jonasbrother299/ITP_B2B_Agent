@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import StatusPill from '../components/StatusPill.jsx'
+import TooltipTerm from '../components/TooltipTerm.jsx'
 import { demoRFQ } from '../context/procurementDemoData.js'
 import { useProcurement } from '../context/useProcurement.js'
 import { useToast } from '../context/useToast.js'
@@ -8,6 +9,24 @@ const riskTone = {
   Niedrig: 'active',
   Mittel: 'warning',
   Hoch: 'risk',
+}
+
+const offerContext = {
+  'Northline Supply': {
+    history: '98 % Termintreue, stabile Konditionen, zuletzt keine Eskalation.',
+    aiReason: 'Bester Gesamtwert aus Preis, Lieferzeit und niedrigem Risiko.',
+    whyNot: 'Dieses Angebot ist die Referenzempfehlung.',
+  },
+  'Müller Industriebedarf': {
+    history: 'Bestehender Lieferant mit zwei Preisabweichungen im letzten Quartal.',
+    aiReason: 'Solide Option, aber höheres Risiko und kürzere Zahlungsfrist.',
+    whyNot: 'Nicht empfohlen, weil Preis und Lieferzeit schwächer als bei Northline Supply sind.',
+  },
+  'SensorTech AG': {
+    history: 'Sehr schnelle Lieferung, aber eingeschränkte Zahlungsbedingungen.',
+    aiReason: 'Schnellste Lieferung, jedoch schwächere Konditionen.',
+    whyNot: 'Nicht empfohlen, weil Vorkasse und hoher Preis den Liefervorteil überwiegen.',
+  },
 }
 
 function ComparisonBar({ label, offers, valueKey }) {
@@ -33,14 +52,25 @@ function Angebotsvergleich() {
   const navigate = useNavigate()
   const { showToast } = useToast()
   const {
+    activeRFQs,
     selectedOffer,
     selectedRFQ,
     setSelectedOffer,
+    setSelectedRFQ,
     startNegotiationForOffer,
     supplierOffers,
   } = useProcurement()
-  const rfq = selectedRFQ || demoRFQ
-  const recommendedOffer = supplierOffers[0]
+  const rfq = selectedRFQ || activeRFQs[0] || demoRFQ
+  const offers = supplierOffers.map((offer) => ({
+    ...offer,
+    ...offerContext[offer.supplier],
+  }))
+  const recommendedOffer = offers[0]
+
+  const handleSelectRfq = (rfqId) => {
+    const nextRFQ = activeRFQs.find((item) => item.id === rfqId) || demoRFQ
+    setSelectedRFQ(nextRFQ)
+  }
 
   const handleSelectOffer = (offer) => {
     setSelectedOffer(offer)
@@ -58,16 +88,31 @@ function Angebotsvergleich() {
         <span>Angebote bewerten</span>
         <h1>Angebotsvergleich</h1>
         <p>
-          Vergleich eingegangener Angebote nach Preis, Lieferzeit, Konditionen,
-          Risiko und Lieferantenperformance.
+          Vergleich eingegangener Angebote nach Preis, Lieferzeit, Historie,
+          Konditionen, Risiko und Lieferantenperformance.
         </p>
       </div>
 
-      <section className="rfq-summary-card" aria-label="RFQ-Zusammenfassung">
-        <div>
-          <span>RFQ-ID</span>
-          <strong>{rfq.id}</strong>
-        </div>
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: bevorzugtes Angebot prüfen und Verhandlung starten
+      </div>
+
+      <section className="rfq-summary-card rfq-summary-card--select" aria-label="RFQ-Zusammenfassung">
+        <label className="form-field">
+          <span className="form-field__label">
+            <TooltipTerm label="RFQ steht für Request for Quotation, also eine Angebotsanfrage.">
+              RFQ auswählen
+            </TooltipTerm>
+          </span>
+          <select className="form-field__select" value={rfq.id} onChange={(event) => handleSelectRfq(event.target.value)}>
+            {activeRFQs.map((item) => (
+              <option key={item.id} value={item.id}>{item.id} · {item.material}</option>
+            ))}
+            {!activeRFQs.some((item) => item.id === demoRFQ.id) && (
+              <option value={demoRFQ.id}>{demoRFQ.id} · {demoRFQ.material}</option>
+            )}
+          </select>
+        </label>
         <div>
           <span>Material</span>
           <strong>{rfq.material}</strong>
@@ -82,8 +127,8 @@ function Angebotsvergleich() {
         </div>
       </section>
 
-      <section className="basic-page__offer-grid" aria-label="Lieferantenangebote">
-        {supplierOffers.map((offer) => {
+      <section className="basic-page__offer-grid basic-page__offer-grid--comparison" aria-label="Lieferantenangebote">
+        {offers.map((offer) => {
           const isSelected = selectedOffer?.id === offer.id
 
           return (
@@ -100,8 +145,13 @@ function Angebotsvergleich() {
                 <div><dt>Lieferzeit</dt><dd>{offer.deliveryTime}</dd></div>
                 <div><dt>Risiko</dt><dd><StatusPill tone={riskTone[offer.risk]}>{offer.risk}</StatusPill></dd></div>
                 <div><dt>Qualität</dt><dd>{offer.quality}</dd></div>
-                <div><dt>Konditionen</dt><dd>{offer.terms}</dd></div>
+                <div><dt>Historie</dt><dd>{offer.history}</dd></div>
               </dl>
+              <div className="offer-card__reason">
+                <strong>KI-Begründung</strong>
+                <p>{offer.aiReason}</p>
+                {!offer.badge.includes('Empfehlung') && <small>Warum nicht Angebot B: {offer.whyNot}</small>}
+              </div>
               <div className="offer-card__actions">
                 <button className="btn btn--secondary btn--small" type="button" onClick={() => handleSelectOffer(offer)}>
                   Auswählen
@@ -109,6 +159,9 @@ function Angebotsvergleich() {
                 <button className="btn btn--primary btn--small" type="button" onClick={() => handleStartNegotiation(offer)}>
                   Verhandlung starten
                 </button>
+                <Link className="btn btn--ghost btn--small" to={`/vorgaenge/${rfq.id}`}>
+                  Vorgang öffnen
+                </Link>
               </div>
             </article>
           )
@@ -123,14 +176,14 @@ function Angebotsvergleich() {
         <div className="comparison-bars">
           <ComparisonBar
             label="Preisvergleich"
-            offers={supplierOffers.map((offer) => ({
+            offers={offers.map((offer) => ({
               ...offer,
               priceScore: Math.round((offer.price / 56000) * 100),
             }))}
             valueKey="priceScore"
           />
-          <ComparisonBar label="Lieferzeit" offers={supplierOffers} valueKey="deliveryScore" />
-          <ComparisonBar label="Risiko" offers={supplierOffers} valueKey="riskScore" />
+          <ComparisonBar label="Lieferzeit" offers={offers} valueKey="deliveryScore" />
+          <ComparisonBar label="Risiko" offers={offers} valueKey="riskScore" />
         </div>
       </section>
 
@@ -143,9 +196,9 @@ function Angebotsvergleich() {
           <button className="btn btn--primary" type="button" onClick={() => handleStartNegotiation(recommendedOffer)}>
             Verhandlung mit Empfehlung starten
           </button>
-          <button className="btn btn--secondary" type="button" onClick={() => navigate('/freigaben')}>
+          <Link className="btn btn--secondary" to="/vorgaenge/APR-1001">
             Zur Freigabe senden
-          </button>
+          </Link>
         </div>
       </section>
     </section>

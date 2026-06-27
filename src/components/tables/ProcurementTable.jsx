@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import ActionMenu from '../ActionMenu.jsx'
 import StatusPill from '../StatusPill.jsx'
 
 function ProcurementTable({ processes }) {
@@ -30,15 +30,14 @@ function ProcurementTable({ processes }) {
               <td>→ {process.nextStep}</td>
               <td>{process.owner}</td>
               <td>
-                {process.detailPath ? (
-                  <Link className="btn btn--secondary btn--small table-action" to={process.detailPath}>
-                    Details
-                  </Link>
-                ) : (
-                  <button className="btn btn--secondary btn--small table-action" type="button">
-                    Details
-                  </button>
-                )}
+                <ActionMenu
+                  actions={[
+                    { label: 'Öffnen', to: process.path },
+                    { label: 'Prüfen', to: process.path },
+                    { label: 'Freigeben', disabled: true },
+                    { label: 'Nachricht senden', disabled: true },
+                  ]}
+                />
               </td>
             </tr>
           ))}

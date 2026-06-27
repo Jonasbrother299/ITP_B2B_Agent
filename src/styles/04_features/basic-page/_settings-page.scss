@@ -139,7 +139,7 @@
 .settings-page__agent-card {
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: #12161c;
+  background: var(--panel);
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -148,7 +148,7 @@
 
   &:hover {
     border-color: rgba(79, 124, 255, 0.36);
-    background: #151b24;
+    background: var(--surface-hover);
     transform: translateY(-2px);
   }
 }
@@ -212,6 +212,7 @@
   display: block;
   margin: 0;
   color: #d7dde7;
+  color: var(--ink);
   font-size: 14px;
   font-weight: 850;
   line-height: 1.25;
@@ -224,7 +225,7 @@
 .setting-control__description {
   margin: 0;
   max-width: 420px;
-  color: #8791a1;
+  color: var(--muted-strong);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -240,13 +241,38 @@
 .setting-control__value {
   display: flex !important;
   align-items: center;
+  gap: 6px;
   justify-content: center;
   min-height: 44px !important;
   border-radius: 10px !important;
+
+  input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    color: #eef2f8;
+    color: var(--ink);
+    background: transparent;
+    font: inherit;
+    font-weight: 900;
+    text-align: right;
+    outline: 0;
+  }
+
+  span {
+    color: #8f9bad;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 900;
+  }
 }
 
 .setting-control__slider {
   width: 100%;
+}
+
+.setting-control__select {
+  min-height: 44px;
 }
 
 .setting-control__range-labels {
@@ -268,7 +294,8 @@
   border-radius: 8px;
   padding: 0 10px;
   color: #e6ebf2;
-  background: #0d121a;
+  color: var(--ink);
+  background: var(--panel-muted);
   outline: none;
 
   &:focus {
@@ -314,13 +341,13 @@
 
   h3 {
     margin: 0;
-    color: #eef2f8;
+    color: var(--ink);
     font-size: 16px;
   }
 
   p {
     margin: 18px 0;
-    color: #8791a1;
+    color: var(--muted-strong);
     font-size: 13px;
     line-height: 1.55;
   }
@@ -334,7 +361,7 @@
     padding-top: 14px;
 
     span {
-      color: #7d8798;
+      color: var(--muted);
       font-size: 12px;
       font-weight: 800;
     }
@@ -348,13 +375,6 @@
 
 .settings-page__agent-card--blue:hover {
   border-color: rgba(79, 124, 255, 0.48);
-}
-
-.settings-page__agent-card--purple:hover {
-  border-color: rgba(155, 92, 255, 0.48);
-  box-shadow:
-    0 0 0 1px rgba(155, 92, 255, 0.16),
-    0 18px 42px rgba(155, 92, 255, 0.12);
 }
 
 .settings-page__agent-card--warning:hover {
@@ -378,19 +398,21 @@
   padding: 22px;
   background:
     radial-gradient(circle at 100% 0%, rgba(45, 212, 191, 0.08), transparent 34%),
-    #12161c;
+    var(--panel);
   box-shadow: var(--shadow);
   animation-delay: 1120ms;
 
   h2 {
     margin: 0 0 14px;
     color: #eef2f8;
+    color: var(--ink);
     font-size: 17px;
   }
 
   p {
     margin: 8px 0 0;
     color: #aeb8c8;
+    color: var(--muted-strong);
     font-size: 14px;
     font-weight: 750;
     line-height: 1.55;
@@ -410,7 +432,7 @@
     min-width: 132px;
     min-height: 44px;
     pointer-events: auto;
-    box-shadow: 0 18px 42px rgba(83, 104, 255, 0.28);
+    box-shadow: 0 18px 42px rgba(37, 99, 235, 0.24);
   }
 }
 
@@ -495,6 +517,69 @@
   .settings-page__card,
   .settings-page__agent-card {
     transition: border-color 120ms ease, background 120ms ease;
+  }
+}
+
+[data-theme="light"] {
+  .settings-page {
+    background: var(--bg);
+  }
+
+  .settings-page__header,
+  .settings-page__section,
+  .settings-page__card,
+  .settings-page__agent-card,
+  .settings-page__summary {
+    border-color: var(--border);
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(37, 99, 235, 0.05), transparent 34%),
+      var(--panel);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .settings-page__section > h2,
+  .settings-page__agent-card h3,
+  .setting-control__title,
+  .settings-page__summary h2 {
+    color: var(--ink);
+  }
+
+  .settings-page__header p,
+  .settings-page__agent-card p,
+  .setting-control__description,
+  .settings-page__summary p {
+    color: var(--muted-strong);
+  }
+
+  .settings-page__card,
+  .settings-page__agent-card {
+    &:hover {
+      background: var(--surface-hover);
+    }
+  }
+
+  .setting-control__value,
+  .settings-page__select {
+    border-color: var(--border);
+    color: var(--ink);
+    background: var(--panel-soft);
+  }
+
+  .setting-control__value input {
+    color: var(--ink);
+  }
+
+  .setting-control__value span,
+  .settings-page__agent-card footer span {
+    color: var(--muted-strong);
+  }
+
+  .settings-page__summary {
+    border-color: rgba(2, 132, 199, 0.22);
+    background:
+      radial-gradient(circle at 100% 0%, rgba(2, 132, 199, 0.08), transparent 34%),
+      var(--panel);
   }
 }
 

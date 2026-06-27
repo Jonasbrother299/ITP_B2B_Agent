@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import ActionMenu from '../components/ActionMenu.jsx'
 import InfoCard from '../components/cards/InfoCard.jsx'
 import StatusPill from '../components/StatusPill.jsx'
+import TooltipTerm from '../components/TooltipTerm.jsx'
 import { useProcurement } from '../context/useProcurement.js'
 import { useToast } from '../context/useToast.js'
 
@@ -91,7 +93,13 @@ function RFQs() {
     <section className="basic-page">
       <div className="basic-page__hero">
         <span>RFQ-Steuerung</span>
-        <h1>Anfragen / RFQs</h1>
+        <h1 className="basic-page__title-with-tooltip">
+          Anfragen / RFQs
+          <TooltipTerm
+            icon
+            label="RFQ steht für Request for Quotation, also eine Angebotsanfrage an Lieferanten."
+          />
+        </h1>
         <p>
           Automatisierte Erstellung und Verwaltung von Angebotsanfragen an
           geeignete Lieferanten.
@@ -99,14 +107,113 @@ function RFQs() {
       </div>
 
       <div className="process-hint">
-        Bedarf erkannt → RFQ erstellen → Angebote vergleichen → Freigabe
+        Ihr nächster sinnvoller Schritt: Angebotsvergleich starten
       </div>
 
       <div className="basic-page__cards">
-        <InfoCard title="Gespeicherte RFQ-Entwürfe" value={String(rfqDrafts.length)} text="Gespeicherte Anfragen vor Versand." />
         <InfoCard title="Aktive RFQs" value={String(activeRFQs.length)} text="Versendet oder mit Angebotseingang." />
+        <InfoCard title="Gespeicherte RFQ-Entwürfe" value={String(rfqDrafts.length)} text="Gespeicherte Anfragen vor Versand." />
         <InfoCard title="Aus Bedarfserkennung" value={selectedNeedForRFQ ? '1' : '0'} text="Aktuell vorausgefüllter Bedarf." />
       </div>
+
+      <section className="panel basic-page__section">
+        <div className="section-header">
+          <h2>Aktive RFQs</h2>
+          <span>Arbeitsliste für Angebotsvergleich und Vorgangsdetail</span>
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>RFQ-ID</th>
+                <th>Material</th>
+                <th>Menge</th>
+                <th>Lieferanten</th>
+                <th>Status</th>
+                <th>Frist</th>
+                <th>Aktion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {activeRFQs.map((rfq) => (
+                <tr key={rfq.id}>
+                  <td><strong>{rfq.id}</strong></td>
+                  <td>{rfq.material}</td>
+                  <td>{rfq.quantity}</td>
+                  <td>{rfq.suppliers}</td>
+                  <td>
+                    <StatusPill tone={statusTone[rfq.status]}>{rfq.status}</StatusPill>
+                  </td>
+                  <td>{rfq.deadline}</td>
+                  <td>
+                    <ActionMenu
+                      actions={[
+                        { label: 'Öffnen', to: `/vorgaenge/${rfq.id}` },
+                        { label: 'Prüfen', to: `/vorgaenge/${rfq.id}` },
+                        { label: 'Angebotsvergleich', to: '/angebotsvergleich' },
+                        { label: 'Nachricht senden', disabled: true },
+                      ]}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel basic-page__section">
+        <div className="section-header">
+          <h2>Gespeicherte RFQ-Entwürfe</h2>
+          <span>{rfqDrafts.length} Entwürfe im lokalen Prototyp</span>
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Entwurf</th>
+                <th>Material</th>
+                <th>Menge</th>
+                <th>Lieferanten</th>
+                <th>Liefertermin</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rfqDrafts.map((draft) => (
+                <tr key={draft.id}>
+                  <td><strong>{draft.id}</strong></td>
+                  <td>{draft.material}</td>
+                  <td>{draft.quantity}</td>
+                  <td>{draft.suppliers}</td>
+                  <td>{draft.deliveryDate || 'Offen'}</td>
+                  <td><StatusPill tone="neutral">Entwurf</StatusPill></td>
+                </tr>
+              ))}
+              {rfqDrafts.length === 0 && (
+                <tr>
+                  <td colSpan="6">Noch keine RFQ-Entwürfe vorhanden.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel basic-page__section">
+        <div className="section-header">
+          <h2>Prozessübersicht</h2>
+          <span>Bedarf erkannt · RFQ erstellen · Angebote vergleichen · Freigabe</span>
+        </div>
+        <div className="rfq-process-overview">
+          {['Bedarf erkannt', 'RFQ versendet', 'Angebote vergleichen', 'Freigabe vorbereiten'].map((step, index) => (
+            <Link className="rfq-process-step" key={step} to={index === 2 ? '/angebotsvergleich' : index === 3 ? '/freigaben' : '/bedarfserkennung'}>
+              <span>{index + 1}</span>
+              {step}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <section className="panel basic-page__section">
         <div className="section-header">
@@ -175,85 +282,6 @@ function RFQs() {
             </button>
           </div>
         </form>
-      </section>
-
-      <section className="panel basic-page__section">
-        <div className="section-header">
-          <h2>Gespeicherte RFQ-Entwürfe</h2>
-          <span>{rfqDrafts.length} Entwürfe im lokalen Prototyp</span>
-        </div>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Entwurf</th>
-                <th>Material</th>
-                <th>Menge</th>
-                <th>Lieferanten</th>
-                <th>Liefertermin</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rfqDrafts.map((draft) => (
-                <tr key={draft.id}>
-                  <td><strong>{draft.id}</strong></td>
-                  <td>{draft.material}</td>
-                  <td>{draft.quantity}</td>
-                  <td>{draft.suppliers}</td>
-                  <td>{draft.deliveryDate || 'Offen'}</td>
-                  <td><StatusPill tone="neutral">Entwurf</StatusPill></td>
-                </tr>
-              ))}
-              {rfqDrafts.length === 0 && (
-                <tr>
-                  <td colSpan="6">Noch keine RFQ-Entwürfe vorhanden.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="panel basic-page__section">
-        <div className="section-header">
-          <h2>Aktive RFQs</h2>
-          <span>Aktualisiert sich direkt nach dem Versand</span>
-        </div>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>RFQ-ID</th>
-                <th>Material</th>
-                <th>Menge</th>
-                <th>Lieferanten</th>
-                <th>Status</th>
-                <th>Frist</th>
-                <th>Aktion</th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeRFQs.map((rfq) => (
-                <tr key={rfq.id}>
-                  <td><strong>{rfq.id}</strong></td>
-                  <td>{rfq.material}</td>
-                  <td>{rfq.quantity}</td>
-                  <td>{rfq.suppliers}</td>
-                  <td>
-                    <StatusPill tone={statusTone[rfq.status]}>{rfq.status}</StatusPill>
-                  </td>
-                  <td>{rfq.deadline}</td>
-                  <td>
-                    <Link className="btn btn--secondary btn--small table-action" to="/angebotsvergleich">
-                      Angebote prüfen
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </section>
     </section>
   )

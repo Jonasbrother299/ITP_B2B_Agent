@@ -6,7 +6,7 @@
 
 .form-field__label,
 .prototype-form label > span {
-  color: #a5afbf;
+  color: var(--muted-strong);
   font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.01em;
@@ -21,8 +21,8 @@
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  color: #edf2f8;
-  background: linear-gradient(180deg, #101722, #0c121a);
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--panel-soft), var(--panel-muted));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
   outline: none;
   transition:
@@ -31,12 +31,12 @@
     background var(--transition-fast);
 
   &::placeholder {
-    color: #596577;
+    color: var(--muted);
   }
 
   &:hover {
     border-color: rgba(148, 163, 184, 0.28);
-    background: #111a26;
+    background: var(--surface-hover);
   }
 
   &:focus,
@@ -76,6 +76,6 @@
 }
 
 .form-field__hint {
-  color: #6f7a8c;
+  color: var(--muted);
   font-size: 12px;
 }

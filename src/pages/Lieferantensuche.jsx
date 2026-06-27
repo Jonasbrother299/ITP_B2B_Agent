@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import ActionMenu from '../components/ActionMenu.jsx'
 import InfoCard from '../components/cards/InfoCard.jsx'
 import StatusPill from '../components/StatusPill.jsx'
 import { useProcurement } from '../context/useProcurement.js'
@@ -156,6 +157,10 @@ function Lieferantensuche() {
         </p>
       </div>
 
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: passenden Lieferanten auswählen und RFQ vorbereiten
+      </div>
+
       <div className="basic-page__cards basic-page__cards--four">
         {metrics.map((metric) => (
           <InfoCard key={metric.title} title={metric.title} value={metric.value} text={metric.text} />
@@ -230,20 +235,16 @@ function Lieferantensuche() {
                     <td>{supplier.rating}</td>
                     <td><StatusPill tone={statusTone[supplier.status]}>{supplier.status}</StatusPill></td>
                     <td>
-                      <div className="inline-actions">
-                        <button className="btn btn--ghost btn--small" type="button" onClick={() => setDetailSupplier(supplier)}>
-                          Details
-                        </button>
-                        <button className="btn btn--secondary btn--small" type="button" onClick={() => handleSelect(supplier)}>
-                          Auswählen
-                        </button>
-                        <button className="btn btn--primary btn--small" type="button" onClick={() => handleRequestOffer(supplier)}>
-                          Angebot anfragen
-                        </button>
-                        <button className="btn btn--ghost btn--small" type="button" onClick={() => handleCompare(supplier)}>
-                          {isCompared ? 'Entfernen' : 'Vergleichen'}
-                        </button>
-                      </div>
+                      <ActionMenu
+                        actions={[
+                          { label: 'Öffnen', onClick: () => setDetailSupplier(supplier) },
+                          { label: 'Prüfen', onClick: () => handleSelect(supplier) },
+                          { label: 'Freigeben', disabled: true },
+                          { label: 'Nachricht senden', disabled: true },
+                          { label: 'Angebot anfragen', onClick: () => handleRequestOffer(supplier) },
+                          { label: isCompared ? 'Aus Vergleich entfernen' : 'Vergleichen', onClick: () => handleCompare(supplier) },
+                        ]}
+                      />
                     </td>
                   </tr>
                 )

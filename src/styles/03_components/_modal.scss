@@ -16,7 +16,7 @@
   border-radius: 16px;
   background:
     radial-gradient(circle at 82% 0%, rgba(79, 124, 255, 0.12), transparent 34%),
-    #111720;
+    var(--panel);
   box-shadow: 0 32px 90px rgba(0, 0, 0, 0.55);
   overflow: hidden;
   animation: modal-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -35,7 +35,7 @@
   border-bottom: 1px solid var(--line);
 
   span {
-    color: #7aa2ff;
+    color: var(--primary);
     font-size: 11px;
     font-weight: 900;
     letter-spacing: 0.06em;
@@ -44,7 +44,7 @@
 
   h2 {
     margin: 6px 0 0;
-    color: #f4f7fb;
+    color: var(--ink);
     font-size: 20px;
     line-height: 1.2;
   }
@@ -59,18 +59,18 @@
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 14px;
-    background: rgba(255, 255, 255, 0.025);
+    background: var(--panel-soft);
   }
 
   h3 {
     margin: 0 0 8px;
-    color: #dbe4f0;
+    color: var(--ink);
     font-size: 13px;
   }
 
   p {
     margin: 0;
-    color: #9aa4b2;
+    color: var(--muted-strong);
     font-size: 13px;
     line-height: 1.55;
   }

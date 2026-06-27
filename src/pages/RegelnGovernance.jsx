@@ -56,7 +56,7 @@ const agents = [
   {
     name: 'Negotiation Agent',
     status: 'Aktiv',
-    tone: 'purple',
+    tone: 'blue',
     description: 'Verhandelt Preise und Konditionen innerhalb freigegebener Grenzen.',
   },
   {
@@ -98,7 +98,7 @@ const autonomyDescriptions = {
 
 const readSavedAgentLevels = (fallbackLevels) => {
   try {
-    const savedLevels = window.localStorage.getItem('procureai-agent-autonomy-levels')
+    const savedLevels = window.localStorage.getItem('procura-agent-autonomy-levels')
     return savedLevels ? { ...fallbackLevels, ...JSON.parse(savedLevels) } : fallbackLevels
   } catch {
     return fallbackLevels
@@ -139,7 +139,18 @@ function NumericControl({ max, min = 0, onChange, step = 1, suffix, value }) {
         <button className="btn btn--ghost btn--small" type="button" onClick={() => updateValue(value - step)}>
           −
         </button>
-        <strong className="setting-control__value">{value.toLocaleString('de-DE')} {suffix}</strong>
+        <label className="setting-control__value">
+          <input
+            aria-label="Regelwert"
+            max={max}
+            min={min}
+            step={step}
+            type="number"
+            value={value}
+            onChange={(event) => updateValue(Number(event.target.value))}
+          />
+          <span>{suffix}</span>
+        </label>
         <button className="btn btn--ghost btn--small" type="button" onClick={() => updateValue(value + step)}>
           +
         </button>
@@ -158,6 +169,22 @@ function NumericControl({ max, min = 0, onChange, step = 1, suffix, value }) {
         <span>{max.toLocaleString('de-DE')} {suffix}</span>
       </div>
     </div>
+  )
+}
+
+function SelectControl({ onChange, options, value }) {
+  return (
+    <select
+      className="form-field__select setting-control__select"
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
   )
 }
 
@@ -230,7 +257,7 @@ function RegelnGovernance() {
       updateAgentAutonomyLevel(agentName, level)
     })
     window.localStorage.setItem(
-      'procureai-agent-autonomy-levels',
+      'procura-agent-autonomy-levels',
       JSON.stringify(draftAgentAutonomyLevels),
     )
     showToast('Agenten-Einstellungen gespeichert.')
@@ -252,6 +279,10 @@ function RegelnGovernance() {
           und wann menschliche Freigaben erforderlich sind.
         </p>
       </header>
+
+      <div className="process-hint">
+        Ihr nächster sinnvoller Schritt: Regelgrenzen prüfen
+      </div>
 
       <SettingsSection title="Autonomiegrenzen" modifier="settings-page__grid--autonomy">
         <SettingCard
@@ -282,6 +313,54 @@ function RegelnGovernance() {
           variant="numeric"
         >
           <NumericControl max={96} min={1} onChange={(value) => updateAutonomyLimit('negotiationDuration', value)} suffix="h" value={autonomyLimits.negotiationDuration} />
+        </SettingCard>
+
+        <SettingCard
+          setting={{
+            label: 'Preisgrenze',
+            description: 'Maximaler Angebotswert, den KI-Agenten ohne zusätzliche Prüfung vorbereiten dürfen.',
+          }}
+          variant="numeric"
+        >
+          <NumericControl max={100000} onChange={(value) => updateAutonomyLimit('priceLimit', value)} step={1000} suffix="€" value={autonomyLimits.priceLimit} />
+        </SettingCard>
+
+        <SettingCard
+          setting={{
+            label: 'Zeitlimit',
+            description: 'Maximale Prozessdauer, bevor ein Vorgang zur Beobachtung markiert wird.',
+          }}
+          variant="numeric"
+        >
+          <NumericControl max={30} min={1} onChange={(value) => updateAutonomyLimit('timeLimitDays', value)} suffix="Tage" value={autonomyLimits.timeLimitDays} />
+        </SettingCard>
+
+        <SettingCard
+          setting={{
+            label: 'Freigabeschwelle',
+            description: 'Ab dieser Summe wird eine manuelle Freigabe im Einkauf erforderlich.',
+          }}
+          variant="numeric"
+        >
+          <NumericControl max={50000} onChange={(value) => updateAutonomyLimit('approvalThreshold', value)} step={500} suffix="€" value={autonomyLimits.approvalThreshold} />
+        </SettingCard>
+
+        <SettingCard
+          setting={{
+            label: 'Risikoschwelle',
+            description: 'Ab diesem Risikoniveau werden KI-Empfehlungen nicht mehr automatisch weitergeführt.',
+          }}
+          variant="numeric"
+        >
+          <SelectControl
+            onChange={(value) => updateAutonomyLimit('riskThreshold', value)}
+            options={[
+              { label: 'niedrig', value: 'niedrig' },
+              { label: 'mittel', value: 'mittel' },
+              { label: 'hoch', value: 'hoch' },
+            ]}
+            value={autonomyLimits.riskThreshold}
+          />
         </SettingCard>
       </SettingsSection>
 
@@ -339,6 +418,8 @@ function RegelnGovernance() {
         <h2>Auswirkung der aktuellen Regeln</h2>
         <p>Negotiation Agent darf bis ±{autonomyLimits.priceRange} % autonom verhandeln.</p>
         <p>Automatische Bestellungen sind bis {autonomyLimits.orderLimit.toLocaleString('de-DE')} € erlaubt.</p>
+        <p>Preisgrenze: {autonomyLimits.priceLimit.toLocaleString('de-DE')} € · Freigabeschwelle: {autonomyLimits.approvalThreshold.toLocaleString('de-DE')} €.</p>
+        <p>Zeitlimit: {autonomyLimits.timeLimitDays} Tage · Risikoschwelle: {autonomyLimits.riskThreshold}.</p>
         <p>{activeEscalations} aktive Eskalationsregeln leiten Freigaben an den Einkauf weiter.</p>
       </section>
     </section>

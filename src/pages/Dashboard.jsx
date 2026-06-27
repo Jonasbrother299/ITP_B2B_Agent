@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import AgentCard from '../components/cards/AgentCard.jsx'
 import MetricCard from '../components/cards/MetricCard.jsx'
@@ -14,16 +15,45 @@ const riskTone = {
 }
 
 const statusTone = {
-  Offen: 'warning',
+  Offen: 'risk',
   Versendet: 'blue',
   'Angebote eingegangen': 'active',
   'Bestellung vorbereitet': 'warning',
   'Bestellung erstellt': 'neutral',
   'ERP-Übergabe erfolgt': 'active',
-  'Verhandlung läuft': 'purple',
+  'Verhandlung läuft': 'blue',
+}
+
+const defaultDashboardWidgets = [
+  { id: 'approvals', label: 'Freigaben', visible: true, priority: 'Hoch' },
+  { id: 'recommendations', label: 'Risiken', visible: true, priority: 'Hoch' },
+  { id: 'processes', label: 'RFQs', visible: true, priority: 'Mittel' },
+  { id: 'agents', label: 'KI-Agenten', visible: true, priority: 'Mittel' },
+  { id: 'prices', label: 'Preisentwicklungen', visible: false, priority: 'Niedrig' },
+  { id: 'delays', label: 'Verzögerungen', visible: false, priority: 'Niedrig' },
+]
+
+const readSavedDashboardWidgets = () => {
+  try {
+    const savedWidgets = window.localStorage.getItem('procura-dashboard-widgets')
+    if (!savedWidgets) {
+      return defaultDashboardWidgets
+    }
+
+    const parsedWidgets = JSON.parse(savedWidgets)
+    return defaultDashboardWidgets.map((widget) => ({
+      ...widget,
+      ...parsedWidgets.find((savedWidget) => savedWidget.id === widget.id),
+    }))
+  } catch {
+    return defaultDashboardWidgets
+  }
 }
 
 function Dashboard() {
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false)
+  const [dashboardWidgets, setDashboardWidgets] = useState(readSavedDashboardWidgets)
+  const [draftDashboardWidgets, setDraftDashboardWidgets] = useState(dashboardWidgets)
   const {
     activeRFQs,
     approvalCases,
@@ -76,7 +106,7 @@ function Dashboard() {
       label: 'Automatisierte RFQs',
       value: String(activeRFQs.length),
       change: 'Aktive RFQs',
-      tone: 'purple',
+      tone: 'blue',
       progress: Math.min(activeRFQs.length * 25, 100),
       path: '/rfqs',
     },
@@ -101,7 +131,7 @@ function Dashboard() {
       progress: negotiationCase ? 74 : 38,
       status: negotiationCase ? 'Verhandlung läuft' : 'Bereit',
       progressMeta: `${negotiationCase ? 74 : 38}%`,
-      tone: 'purple',
+      tone: 'blue',
       path: '/verhandlungen',
     },
     {
@@ -135,27 +165,27 @@ function Dashboard() {
       tone: statusTone[rfq.status] || 'blue',
       nextStep: 'Angebotsvergleich',
       owner: 'RFQ Agent',
-      detailPath: rfq.id === 'RFQ-1024' ? '/vorgänge/rfq-1024' : null,
+      path: `/vorgaenge/${rfq.id}`,
     })),
     ...(negotiationCase ? [{
       id: negotiationCase.rfqId,
       product: negotiationCase.material,
       supplier: negotiationCase.supplier,
       status: negotiationCase.status,
-      tone: 'purple',
+      tone: 'blue',
       nextStep: 'Verhandlung prüfen',
       owner: 'Negotiation Agent',
-      path: '/verhandlungen',
+      path: `/vorgaenge/${negotiationCase.rfqId}`,
     }] : []),
     ...openApprovals.slice(0, 2).map((approval) => ({
       id: approval.id,
       product: approval.relatedMaterial,
       supplier: approval.relatedSupplier,
       status: approval.status,
-      tone: 'warning',
+      tone: 'risk',
       nextStep: 'Freigabe entscheiden',
       owner: 'Einkauf',
-      path: '/freigaben',
+      path: `/vorgaenge/${approval.id}`,
     })),
     ...orders.map((order) => ({
       id: order.orderId,
@@ -165,7 +195,7 @@ function Dashboard() {
       tone: statusTone[order.status] || 'neutral',
       nextStep: order.status === 'ERP-Übergabe erfolgt' ? 'Lieferbestätigung' : 'ERP-Status prüfen',
       owner: 'Order Agent',
-      path: '/bestellungen',
+      path: `/vorgaenge/${order.orderId}`,
     })),
   ].slice(0, 7)
 
@@ -188,7 +218,7 @@ function Dashboard() {
       label: 'Anfragen / RFQs',
       text: 'Aktive RFQs können im Angebotsvergleich ausgewertet werden.',
       time: 'Heute',
-      tone: 'purple',
+      tone: 'blue',
       path: '/angebotsvergleich',
     },
     orders.length > 0 && {
@@ -199,6 +229,68 @@ function Dashboard() {
       path: '/bestellungen',
     },
   ].filter(Boolean)
+
+  const isWidgetVisible = (widgetId) =>
+    dashboardWidgets.find((widget) => widget.id === widgetId)?.visible
+
+  const widgetOrderClass = (widgetId) => {
+    const order = dashboardWidgets.findIndex((widget) => widget.id === widgetId) + 1
+    return `dashboard-widget-order-${order}`
+  }
+
+  const openCustomizer = () => {
+    setDraftDashboardWidgets(dashboardWidgets)
+    setIsCustomizerOpen(true)
+  }
+
+  const cancelCustomizer = () => {
+    setDraftDashboardWidgets(dashboardWidgets)
+    setIsCustomizerOpen(false)
+  }
+
+  const saveCustomizer = () => {
+    setDashboardWidgets(draftDashboardWidgets)
+    window.localStorage.setItem('procura-dashboard-widgets', JSON.stringify(draftDashboardWidgets))
+    setIsCustomizerOpen(false)
+  }
+
+  const resetCustomizer = () => {
+    window.localStorage.removeItem('procura-dashboard-widgets')
+    setDashboardWidgets(defaultDashboardWidgets)
+    setDraftDashboardWidgets(defaultDashboardWidgets)
+  }
+
+  const toggleDraftWidget = (widgetId) => {
+    setDraftDashboardWidgets((widgets) =>
+      widgets.map((widget) =>
+        widget.id === widgetId ? { ...widget, visible: !widget.visible } : widget,
+      ),
+    )
+  }
+
+  const updateDraftWidgetPriority = (widgetId, priority) => {
+    setDraftDashboardWidgets((widgets) =>
+      widgets.map((widget) =>
+        widget.id === widgetId ? { ...widget, priority } : widget,
+      ),
+    )
+  }
+
+  const moveDraftWidget = (widgetId, direction) => {
+    setDraftDashboardWidgets((widgets) => {
+      const currentIndex = widgets.findIndex((widget) => widget.id === widgetId)
+      const nextIndex = currentIndex + direction
+
+      if (currentIndex < 0 || nextIndex < 0 || nextIndex >= widgets.length) {
+        return widgets
+      }
+
+      const nextWidgets = [...widgets]
+      const [widget] = nextWidgets.splice(currentIndex, 1)
+      nextWidgets.splice(nextIndex, 0, widget)
+      return nextWidgets
+    })
+  }
 
   return (
     <>
@@ -217,6 +309,9 @@ function Dashboard() {
           </div>
         </div>
         <div className="hero-panel__actions">
+          <button className="btn btn--ghost" type="button" onClick={openCustomizer}>
+            Dashboard anpassen
+          </button>
           <Link className="btn btn--primary" to="/rfqs">+ Neue RFQ erstellen</Link>
           <Link className="btn btn--secondary" to="/freigaben">
             Freigaben prüfen <strong>{openApprovals.length}</strong>
@@ -224,18 +319,106 @@ function Dashboard() {
         </div>
       </section>
 
-      <section className="kpi-grid" aria-label="Procurement KPIs">
+      {isCustomizerOpen && (
+        <section className="panel dashboard-customizer" aria-label="Dashboard anpassen">
+          <div className="section-header">
+            <h2>Dashboard anpassen</h2>
+            <span>Widgets aktivieren, priorisieren und Reihenfolge ändern</span>
+          </div>
+          <div className="dashboard-customizer__list">
+            {draftDashboardWidgets.map((widget, index) => (
+              <article className="dashboard-customizer__item" key={widget.id}>
+                <div className="dashboard-customizer__widget">
+                  <span>Widget</span>
+                  <strong>{widget.label}</strong>
+                </div>
+                <label className="dashboard-customizer__visibility">
+                  <input
+                    checked={widget.visible}
+                    type="checkbox"
+                    onChange={() => toggleDraftWidget(widget.id)}
+                  />
+                  <span>Anzeigen</span>
+                </label>
+                <label className="dashboard-customizer__priority">
+                  <span>Priorität</span>
+                  <select
+                    className="form-field__select"
+                    value={widget.priority}
+                    onChange={(event) => updateDraftWidgetPriority(widget.id, event.target.value)}
+                  >
+                    <option>Hoch</option>
+                    <option>Mittel</option>
+                    <option>Niedrig</option>
+                  </select>
+                </label>
+                <div className="dashboard-customizer__order" aria-label={`Reihenfolge für ${widget.label}`}>
+                  <span>Reihenfolge</span>
+                  <div>
+                    <button className="btn btn--ghost btn--small" disabled={index === 0} type="button" onClick={() => moveDraftWidget(widget.id, -1)}>
+                      ↑ Nach oben
+                    </button>
+                    <button className="btn btn--ghost btn--small" disabled={index === draftDashboardWidgets.length - 1} type="button" onClick={() => moveDraftWidget(widget.id, 1)}>
+                      ↓ Nach unten
+                    </button>
+                  </div>
+                </div>
+                <div className="dashboard-customizer__status">
+                  <span>Status</span>
+                  <strong>{widget.visible ? 'Wird angezeigt' : 'Ausgeblendet'}</strong>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="dashboard-customizer__footer">
+            <button className="btn btn--ghost" type="button" onClick={resetCustomizer}>
+              Zurücksetzen
+            </button>
+            <div>
+              <button className="btn btn--secondary" type="button" onClick={cancelCustomizer}>
+                Abbrechen
+              </button>
+              <button className="btn btn--primary" type="button" onClick={saveCustomizer}>
+                Speichern
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="kpi-grid" aria-label="Procura KPIs">
         {kpis.map((metric) => (
           <MetricCard metric={metric} key={metric.label} />
         ))}
       </section>
 
+      <div className="process-hint dashboard-next-step">
+        Ihr nächster sinnvoller Schritt: wichtigste offene Freigabe prüfen
+      </div>
+
+      <div className="dashboard-process-stepper" aria-label="Procura Prozess">
+        {[
+          ['Bedarf erkannt', '/bedarfserkennung'],
+          ['RFQ', '/rfqs'],
+          ['Angebotsvergleich', '/angebotsvergleich'],
+          ['Verhandlung', '/verhandlungen'],
+          ['Freigabe', '/freigaben'],
+          ['Bestellung', '/bestellungen'],
+          ['Reporting', '/reporting'],
+        ].map(([label, path], index) => (
+          <Link key={label} to={path}>
+            <span>{index + 1}</span>
+            {label}
+          </Link>
+        ))}
+      </div>
+
       <div className="dashboard__body">
         <div className="dashboard__main">
-          <section className="panel panel--decisions">
+          <section className={`panel panel--decisions ${widgetOrderClass('approvals')} ${isWidgetVisible('approvals') ? '' : 'dashboard-widget--hidden'}`}>
             <SectionHeader
               eyebrow={`${openApprovals.length} offene Fälle · Human-in-the-Loop`}
-              title="Freigabe durch Einkauf erforderlich"
+              title="Freigaben durch Einkauf"
             />
             <div className="decision-list">
               {openApprovals.length === 0 && (
@@ -262,14 +445,14 @@ function Dashboard() {
                     <small>{approval.dataSource} · {approval.relatedSupplier}</small>
                   </div>
                   <div className="decision-card__actions">
-                    <Link className="btn btn--primary btn--small" to={`/freigaben/${approval.id}`}>Prüfen</Link>
+                    <Link className="btn btn--primary btn--small" to={`/vorgaenge/${approval.id}`}>Prüfen</Link>
                   </div>
                 </article>
               ))}
             </div>
           </section>
 
-          <section className="panel">
+          <section className={`panel dashboard-process-widget ${widgetOrderClass('processes')} ${isWidgetVisible('processes') ? '' : 'dashboard-widget--hidden'}`}>
             <SectionHeader
               eyebrow={`${processRows.length} laufende Vorgänge`}
               title="Laufende Beschaffungsvorgänge"
@@ -279,7 +462,7 @@ function Dashboard() {
         </div>
 
         <aside className="dashboard__aside">
-          <section className="panel recommendations">
+          <section className={`panel recommendations ${widgetOrderClass('recommendations')} ${isWidgetVisible('recommendations') ? '' : 'dashboard-widget--hidden'}`}>
             <SectionHeader eyebrow={`${recommendations.length} aktive Hinweise`} title="KI-Empfehlungen" />
             <div className="recommendations__grid">
               {recommendations.map((recommendation) => (
@@ -299,18 +482,32 @@ function Dashboard() {
             </div>
           </section>
 
-          <section className="panel panel--agents panel--agents-compact">
+          <section className={`panel panel--agents ${widgetOrderClass('agents')} ${isWidgetVisible('agents') ? '' : 'dashboard-widget--hidden'}`}>
             <SectionHeader
               eyebrow="Aktueller Agentenstatus"
               title="Aktive KI-Agenten"
             />
-            <div className="agent-list agent-list--compact">
+            <div className="agent-list">
               {agents.map((agent) => (
                 <AgentCard agent={agent} key={agent.name} />
               ))}
             </div>
           </section>
         </aside>
+
+        <section className={`panel dashboard-placeholder-widget ${widgetOrderClass('prices')} ${isWidgetVisible('prices') ? '' : 'dashboard-widget--hidden'}`}>
+          <SectionHeader eyebrow="Optionales Widget" title="Preisentwicklungen" />
+          <div className="dashboard-placeholder-widget__body">
+            <p>Preisverläufe werden im nächsten Prototyp-Schritt mit RFQ- und Angebotsdaten verbunden.</p>
+          </div>
+        </section>
+
+        <section className={`panel dashboard-placeholder-widget ${widgetOrderClass('delays')} ${isWidgetVisible('delays') ? '' : 'dashboard-widget--hidden'}`}>
+          <SectionHeader eyebrow="Optionales Widget" title="Verzögerungen" />
+          <div className="dashboard-placeholder-widget__body">
+            <p>Lieferverzüge und blockierte Vorgänge werden hier priorisiert dargestellt.</p>
+          </div>
+        </section>
       </div>
     </>
   )

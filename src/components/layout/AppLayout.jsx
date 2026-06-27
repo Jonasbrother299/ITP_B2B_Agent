@@ -1,4 +1,6 @@
 import { Outlet } from 'react-router-dom'
+import SourceDrawer from '../SourceDrawer.jsx'
+import TeamDrawer from '../TeamDrawer.jsx'
 import Sidebar from './Sidebar.jsx'
 import Topbar from './Topbar.jsx'
 
@@ -10,6 +12,8 @@ function AppLayout() {
         <Topbar />
         <Outlet />
       </main>
+      <TeamDrawer />
+      <SourceDrawer />
     </div>
   )
 }

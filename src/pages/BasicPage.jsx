@@ -270,7 +270,7 @@ function BasicPage({ page }) {
   return (
     <section className="basic-page">
       <div className="basic-page__hero">
-        <span>ProcureAI Modul</span>
+        <span>Procura Modul</span>
         <h1>{page.title}</h1>
         <p>{page.description}</p>
       </div>

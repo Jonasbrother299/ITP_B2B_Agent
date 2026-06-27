@@ -1,17 +1,21 @@
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useUi } from '../../context/useUi.js'
 import { navigationItems } from '../../data/navigationData.js'
 
 function Topbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const { openTeamDrawer, theme, toggleTheme } = useUi()
   const { pathname } = useLocation()
   const activeItem =
-    navigationItems.find((item) => item.path === pathname) ?? navigationItems[0]
+    pathname.startsWith('/vorgaenge') || pathname.startsWith('/freigaben/')
+      ? { label: 'Vorgangsdetail' }
+      : navigationItems.find((item) => item.path === pathname) ?? navigationItems[0]
 
   return (
     <header className="topbar">
       <div className="topbar__breadcrumb">
-        <span>ProcureAI</span>
+        <span>Procura</span>
         <strong>{activeItem.label}</strong>
       </div>
 
@@ -21,6 +25,12 @@ function Topbar() {
       </label>
 
       <div className="topbar__profile" aria-label="Signed in user">
+        <button className="btn btn--secondary btn--small" type="button" onClick={() => openTeamDrawer()}>
+          Team fragen
+        </button>
+        <button className="btn btn--ghost topbar__icon-button" type="button" aria-label="Theme wechseln" onClick={toggleTheme}>
+          {theme === 'dark' ? '☾' : '☼'}
+        </button>
         <button className="btn btn--ghost topbar__icon-button" type="button" aria-label="Benachrichtigungen">
           ○
         </button>
@@ -64,7 +74,7 @@ function Topbar() {
             <dl className="profile-drawer__meta">
               <div>
                 <dt>Rolle</dt>
-                <dd>Procurement Lead</dd>
+                <dd>Procura Lead</dd>
               </div>
               <div>
                 <dt>Freigabelimit</dt>
