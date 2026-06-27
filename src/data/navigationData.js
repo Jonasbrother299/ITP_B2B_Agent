@@ -7,7 +7,7 @@ export const navigationItems = [
   { label: 'Verhandlungen', icon: 'V', path: '/verhandlungen' },
   { label: 'Freigaben', icon: 'F', path: '/freigaben', badge: '6' },
   { label: 'Bestellungen', icon: 'B', path: '/bestellungen' },
-  { label: 'Reporting', icon: 'P', path: '/reporting' },
+  { label: 'Reporting', icon: 'R', path: '/reporting' },
   { label: 'Governance-Regeln', icon: 'G', path: '/regeln-governance' },
 ]
 
